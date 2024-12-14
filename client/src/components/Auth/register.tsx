@@ -5,7 +5,9 @@ import Button from "@mui/material/Button";
 import { Google as GoogleIcon } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { handleGoogleLogin } from "@/lib/features/authSlice";
+import { useAppDispatch } from "@/lib/hooks";
 export default function RegisterDialog({
   open,
   onClose,
@@ -15,6 +17,25 @@ export default function RegisterDialog({
 }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
+  const handleGoogleSignIn = () => {
+    signIn("google");
+  };
+
+  const dispatch = useAppDispatch();
+
+  const { data: session } = useSession();
+
+  React.useEffect(() => {
+    if (session) {
+      const userDetails = {
+        name: session.user?.name || "",
+        email: session.user?.email || "",
+        imageUri: session.user?.image || "",
+      };
+      dispatch(handleGoogleLogin(userDetails));
+    }
+  }, [session, dispatch]);
 
   return (
     <Dialog
@@ -32,7 +53,7 @@ export default function RegisterDialog({
           variant="outlined"
           startIcon={<GoogleIcon />}
           className="!border-black !text-black !w-full !rounded-full !py-3 !mb-6"
-          onClick={() => signIn("google")}
+          onClick={handleGoogleSignIn}
         >
           Sign up with Google
         </Button>

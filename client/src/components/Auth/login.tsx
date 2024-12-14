@@ -6,6 +6,8 @@ import { Google as GoogleIcon } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { signIn, useSession } from "next-auth/react";
+import { useAppDispatch } from "@/lib/hooks";
+import { handleGoogleLogin } from "@/lib/features/authSlice";
 
 export default function LoginDialog({
   open,
@@ -21,7 +23,20 @@ export default function LoginDialog({
     signIn("google");
   };
 
+  const dispatch = useAppDispatch();
+
   const { data: session } = useSession();
+
+  React.useEffect(() => {
+    if (session) {
+      const userDetails = {
+        name: session.user?.name || "",
+        email: session.user?.email || "",
+        imageUri: session.user?.image || "",
+      };
+      dispatch(handleGoogleLogin(userDetails));
+    }
+  }, [session, dispatch]);
 
   return (
     <Dialog

@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "../components/providers/auth-provider";
 import { getServerSession } from "next-auth";
-// import StoreProvider from "@/providers/store-provider";
+import StoreProvider from "@/providers/store-provider";
 
 export const metadata: Metadata = {
   title: "Medium",
@@ -26,7 +26,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} antialiased`}>
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <StoreProvider>
+          <SessionProvider session={session}>{children}</SessionProvider>
+        </StoreProvider>
       </body>
     </html>
   );
