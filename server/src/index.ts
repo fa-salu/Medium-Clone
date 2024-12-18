@@ -4,18 +4,19 @@ import cors from "cors";
 import connectDB from "./config/db";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import authRoutes from "./routes/userRoute";
+import storyRoutes from "./routes/storyRoutes";
 
 dotenv.config();
 const app = express();
 connectDB();
 
-app.use(express.json());
-
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 
 app.use(globalErrorHandler);
+app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api", storyRoutes);
 
 const PORT = process.env.PORT || 3001;
 

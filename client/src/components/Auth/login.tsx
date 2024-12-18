@@ -8,6 +8,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { signIn, useSession } from "next-auth/react";
 import { useAppDispatch } from "@/lib/hooks";
 import { handleGoogleLogin } from "@/lib/features/authSlice";
+import { useRouter } from "next/navigation";
 
 export default function LoginDialog({
   open,
@@ -18,6 +19,7 @@ export default function LoginDialog({
 }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const router = useRouter();
 
   const handleGoogleSignIn = () => {
     signIn("google");
@@ -34,9 +36,11 @@ export default function LoginDialog({
         email: session.user?.email || "",
         imageUri: session.user?.image || "",
       };
-      dispatch(handleGoogleLogin(userDetails));
+      dispatch(handleGoogleLogin(userDetails)).then(() => {
+        router.push("/u-home");
+      });
     }
-  }, [session, dispatch]);
+  }, [session, dispatch, router]);
 
   return (
     <Dialog

@@ -6,9 +6,7 @@ import { StandardResponse } from "../utils/standardResponse";
 const JWT_SECRET = process.env.JWT_SECRET_KEY || "sldfkj83owurjfw8eio"; // Replace with a secure key in .env
 
 export const login = async (req: Request, res: Response) => {
-  console.log("hello");
   const { name, email, imageUri } = req.body;
-  console.log(name, email);
 
   if (!name || !email || !imageUri) {
     return res.status(400).json({
@@ -30,7 +28,6 @@ export const login = async (req: Request, res: Response) => {
   const token = jwt.sign({ id: user._id, email }, JWT_SECRET, {
     expiresIn: "7d",
   });
-  console.log(token);
   const response = {
     user,
     token,

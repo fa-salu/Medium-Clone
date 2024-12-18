@@ -1,6 +1,12 @@
-import NextAuth from "next-auth";
+import NextAuth, {
+  type NextAuthOptions,
+  type Session,
+  type User,
+} from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
-export const authOptions = {
+
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
@@ -15,15 +21,18 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
-      return { ...token, ...user };
+    jwt({ token, user }: { token: JWT; user?: User }) {
+      if (user) {
+        return { ...token, ...user };
+      }
+      return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       session.user = token;
       return session;
     },
   },
 };
-export const handler = NextAuth(authOptions);
 
+export const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
