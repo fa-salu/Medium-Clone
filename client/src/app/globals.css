@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+h2 {
+  @apply text-3xl font-semibold;
+}
+
+h3 {
+  @apply text-2xl font-semibold;
+}
+
+blockquote {
+  border-left: 4px solid #ccc;
+  padding-left: 1em;
+  color: #555;
+  font-style: italic;
+}
+
 /* scrollbar style css */
 ::-webkit-scrollbar {
   width: 4px;

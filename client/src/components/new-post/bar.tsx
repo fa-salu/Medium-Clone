@@ -1,10 +1,18 @@
+import { useState } from "react";
 import { Notifications } from "@mui/icons-material";
 import { Avatar, Button, IconButton } from "@mui/material";
-import React from "react";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import IconSet from "./addButton";
 
 export default function Bar() {
+  const [showIcons, setShowIcons] = useState(false);
+
+  const handleAddIconClick = () => {
+    setShowIcons((prev) => !prev);
+  };
+
   return (
-    <div className="flex justify-between items-center px-52 py-4 bg-white rounded-lg">
+    <div className="flex sticky top-0 justify-between items-center px-52 py-4 bg-white rounded-lg z-50">
       <div className="flex items-end">
         <h1 className="text-3xl font-semibold">Medium</h1>
         <p className="text-sm ml-3 text-gray-500">Draft in Fasalu</p>
@@ -20,6 +28,13 @@ export default function Bar() {
         <IconButton className="p-2 hover:bg-gray-200 rounded-full">
           <Notifications />
         </IconButton>
+        <IconButton
+          className="p-2 hover:bg-gray-200 rounded-full"
+          onClick={handleAddIconClick}
+        >
+          <AddCircleIcon />
+        </IconButton>
+        {showIcons && <IconSet />}
         <IconButton className="p-2 hover:bg-gray-200 rounded-full">
           <Avatar
             alt="Remy Sharp"

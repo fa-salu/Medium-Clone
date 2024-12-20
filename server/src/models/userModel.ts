@@ -4,13 +4,25 @@ interface User extends Document {
   name: string;
   email: string;
   imageUri: string;
+  likedPosts: mongoose.Types.ObjectId[];
+  clappedPosts: mongoose.Types.ObjectId[];
 }
 
 const userSchema = new Schema<User>(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true }, // Email is unique
+    email: { type: String, required: true, unique: true },
     imageUri: { type: String, required: true },
+    likedPosts: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Story",
+      default: [],
+    },
+    clappedPosts: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Story",
+      default: [],
+    },
   },
   { timestamps: true }
 );

@@ -24,7 +24,6 @@ export const verifyToken = async (
   next: NextFunction
 ): Promise<void> => {
   const token = req.headers.authorization?.split(" ")[1];
-  console.log("token:", token);
 
   if (!token) {
     res.status(401).json({ message: "Unauthorized. No token provided." });
@@ -37,11 +36,9 @@ export const verifyToken = async (
       id: string;
       email: string;
     };
-    console.log("decode:", decoded);
 
     // Find user from the decoded token
     const user = ((await UserModel.findById(decoded.id)) as User) || null;
-    console.log("user", user);
     if (!user) {
       res.status(404).json({ message: "User not found." });
       return;

@@ -5,6 +5,8 @@ import connectDB from "./config/db";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import authRoutes from "./routes/userRoute";
 import storyRoutes from "./routes/storyRoutes";
+import savedStory from "./routes/saveRoutes";
+import uploadRoutes from "./routes/uploadRoutes";
 
 dotenv.config();
 const app = express();
@@ -16,7 +18,7 @@ app.use(globalErrorHandler);
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-app.use("/api", storyRoutes);
+app.use("/api", storyRoutes, savedStory, uploadRoutes);
 
 const PORT = process.env.PORT || 3001;
 

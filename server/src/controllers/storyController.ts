@@ -3,12 +3,12 @@ import type { CustomRequest } from "../types/interfaces";
 import { CustomError } from "../utils/error/customError";
 import { StandardResponse } from "../utils/standardResponse";
 import Story from "../models/storyModel";
+import { UserModel } from "../models/userModel";
+import mongoose from "mongoose";
 
 // Create a new story
 export const createStory = async (req: CustomRequest, res: Response) => {
-  console.log("first");
-  const { title, content } = req.body;
-  console.log("object");
+  const { title, content, category } = req.body;
   const userId = req.user?.id;
 
   if (!title || !content) {
@@ -22,6 +22,7 @@ export const createStory = async (req: CustomRequest, res: Response) => {
   const newStory = new Story({
     title,
     content,
+    category,
     author: userId,
     createdAt: Date.now(),
   });
@@ -35,49 +36,49 @@ export const createStory = async (req: CustomRequest, res: Response) => {
 
 // Get all stories
 export const getAllStories = async (req: CustomRequest, res: Response) => {
-  try {
-    const stories = await Story.aggregate([
-      {
-        $lookup: {
-          from: "users", // Collection name of the User model (case-sensitive in MongoDB)
-          localField: "author", // Field in the Story model to match
-          foreignField: "_id", // Field in the User model to match
-          as: "authorDetails", // The field name where the joined data will be added
-        },
+  const stories = await Story.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "author",
+        foreignField: "_id",
+        as: "authorDetails",
       },
-      {
-        $unwind: {
-          path: "$authorDetails", // Flatten the authorDetails array
-          preserveNullAndEmptyArrays: true, // Optional: Keep stories even if no matching user is found
-        },
+    },
+    {
+      $unwind: {
+        path: "$authorDetails",
+        preserveNullAndEmptyArrays: true,
       },
-      {
-        $project: {
-          title: 1,
-          content: 1,
-          createdAt: 1,
-          "authorDetails.name": 1,
-          "authorDetails.email": 1,
-        },
+    },
+    {
+      $project: {
+        title: 1,
+        content: 1,
+        category: 1,
+        claps: 1,
+        likes: 1,
+        createdAt: 1,
+        "authorDetails.name": 1,
+        "authorDetails.email": 1,
+        "authorDetails.imageUri": 1,
       },
-    ]);
+    },
+  ]);
 
-    if (!stories || stories.length === 0) {
-      throw new CustomError("No stories found.", 404);
-    }
-
-    res
-      .status(200)
-      .json(new StandardResponse("Stories fetched successfully", stories));
-  } catch (error) {
-    throw new CustomError("Failed to fetch stories.", 500);
+  if (!stories || stories.length === 0) {
+    throw new CustomError("No stories found.", 404);
   }
+
+  res
+    .status(200)
+    .json(new StandardResponse("Stories fetched successfully", stories));
 };
 
 // Update a story
 export const updateStory = async (req: CustomRequest, res: Response) => {
   const { storyId } = req.params;
-  const { title, content } = req.body;
+  const { title, content, category } = req.body;
   const userId = req.user?.id;
 
   if (!storyId) {
@@ -96,6 +97,7 @@ export const updateStory = async (req: CustomRequest, res: Response) => {
 
   story.title = title || story.title;
   story.content = content || story.content;
+  story.category = category || story.category;
 
   await story.save();
 
@@ -128,4 +130,104 @@ export const deleteStory = async (req: CustomRequest, res: Response) => {
   res
     .status(200)
     .json(new StandardResponse("Story deleted successfully", null));
+};
+
+// Update likes
+export const updateLikes = async (req: CustomRequest, res: Response) => {
+  const { storyId } = req.params;
+  const { increment } = req.body;
+  const userId = req.user?.id;
+
+  if (!storyId) {
+    throw new CustomError("Story ID is required.", 400);
+  }
+
+  const storyObjectId = new mongoose.Types.ObjectId(storyId);
+
+  const story = await Story.findById(storyObjectId);
+
+  if (!story) {
+    throw new CustomError("Story not found.", 404);
+  }
+
+  const user = await UserModel.findById(userId);
+
+  if (!user) {
+    throw new CustomError("User not found.", 404);
+  }
+
+  if (increment) {
+    if (!user.likedPosts.includes(storyObjectId)) {
+      user.likedPosts.push(storyObjectId);
+      story.likes += 1;
+    } else {
+      throw new CustomError("You have already liked this story.", 400);
+    }
+  } else {
+    if (user.likedPosts.includes(storyObjectId)) {
+      user.likedPosts = user.likedPosts.filter(
+        (id) => id.toString() !== storyObjectId.toString()
+      );
+      story.likes = Math.max(0, story.likes - 1);
+    } else {
+      throw new CustomError("You have not liked this story yet.", 400);
+    }
+  }
+
+  await user.save();
+  await story.save();
+
+  res
+    .status(200)
+    .json(new StandardResponse("Likes updated successfully", story));
+};
+
+// Update claps
+export const updateClaps = async (req: CustomRequest, res: Response) => {
+  const { storyId } = req.params;
+  const { increment } = req.body;
+  const userId = req.user?.id;
+
+  if (!storyId) {
+    throw new CustomError("Story ID is required.", 400);
+  }
+
+  const storyObjectId = new mongoose.Types.ObjectId(storyId);
+
+  const story = await Story.findById(storyObjectId);
+
+  if (!story) {
+    throw new CustomError("Story not found.", 404);
+  }
+
+  const user = await UserModel.findById(userId);
+
+  if (!user) {
+    throw new CustomError("User not found.", 404);
+  }
+
+  if (increment) {
+    if (!user.clappedPosts.includes(storyObjectId)) {
+      user.clappedPosts.push(storyObjectId);
+      story.claps += 1;
+    } else {
+      throw new CustomError("You have already liked this story.", 400);
+    }
+  } else {
+    if (user.clappedPosts.includes(storyObjectId)) {
+      user.clappedPosts = user.clappedPosts.filter(
+        (id) => id.toString() !== storyObjectId.toString()
+      );
+      story.claps = Math.max(0, story.claps - 1);
+    } else {
+      throw new CustomError("You have not liked this story yet.", 400);
+    }
+  }
+
+  await user.save();
+  await story.save();
+
+  res
+    .status(200)
+    .json(new StandardResponse("Likes updated successfully", story));
 };

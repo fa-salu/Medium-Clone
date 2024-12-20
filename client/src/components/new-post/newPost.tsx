@@ -1,79 +1,66 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect, useRef } from "react";
+import MediumEditor from "medium-editor";
+// import { marked } from "marked";
+import "medium-editor/dist/css/medium-editor.css";
+import "medium-editor/dist/css/themes/default.css";
+import "medium-editor-insert-plugin/dist/css/medium-editor-insert-plugin.min.css";
 import Bar from "./bar";
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
 export default function NewStory() {
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
-  const [activeLine, setActiveLine] = useState<number | null>(null);
-  console.log(activeLine);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const storyRef = useRef<HTMLDivElement>(null);
 
-  const handleKeyDownTitle = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      document.getElementById("storyInput")?.focus();
-      setActiveLine(2);
-    }
-  };
+  console.log(story);
 
-  const handleKeyDownStory = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Backspace" && story.length === 0) {
-      e.preventDefault();
-      document.getElementById("titleInput")?.focus();
-      setActiveLine(1);
+  useEffect(() => {
+    if (titleRef.current) {
+      new MediumEditor(titleRef.current, {
+        placeholder: { text: "Title", hideOnClick: true },
+        toolbar: false,
+        disableReturn: true,
+      });
+      titleRef.current.addEventListener("input", (e) => {
+        setTitle((e.target as HTMLDivElement).innerHTML);
+      });
     }
-  };
 
-  const handleClickLine = (line: number) => {
-    if ((line === 1 && !title) || (line === 2 && !story)) {
-      setActiveLine(line);
+    if (storyRef.current) {
+      new MediumEditor(storyRef.current, {
+        placeholder: { text: "Tell your story...", hideOnClick: true },
+        toolbar: {
+          buttons: [
+            "bold",
+            "italic",
+            "underline",
+            "anchor",
+            "h2",
+            "h3",
+            "quote",
+          ],
+        },
+      });
+      storyRef.current.addEventListener("input", (e) => {
+        setStory((e.target as HTMLDivElement).innerHTML);
+      });
     }
-  };
+  }, []);
 
   return (
     <div>
       <Bar />
-      <div className="flex flex-col px-32 mt-10 space-y-4">
-        <button
-          type="button"
-          onClick={() => handleClickLine(1)}
-          onKeyDown={(e) => handleClickLine(1)}
-          className="w-full relative"
-        >
-          {activeLine === 1 && !title && (
-            <AddCircleOutlineOutlinedIcon className="absolute top-1" />
-          )}
-          <textarea
-            id="titleInput"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={handleKeyDownTitle}
-            rows={1}
-            className="w-full h-full text-4xl font-bold focus:outline-none placeholder-gray-400 bg-transparent pl-8" // Adding padding-left to leave space for icon
-          />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleClickLine(2)}
-          onKeyDown={(e) => handleClickLine(2)}
-          className="w-full relative"
-        >
-          {activeLine === 2 && !story && (
-            <AddCircleOutlineOutlinedIcon className="absolute top-1" />
-          )}
-          <textarea
-            id="storyInput"
-            placeholder="Tell your story..."
-            value={story}
-            onChange={(e) => setStory(e.target.value)}
-            onKeyDown={handleKeyDownStory}
-            rows={10}
-            className="w-full text-xl focus:outline-none resize-none placeholder-gray-500 bg-transparent pl-8" // Adding padding-left to leave space for icon
-          />
-        </button>
+      <div className="flex flex-col px-32 mt-10 space-y-6">
+        <div
+          ref={titleRef}
+          className="text-4xl font-bold placeholder-gray-400 bg-transparent focus:outline-none pl-2"
+        />
+        <div
+          ref={storyRef}
+          className="text-xl placeholder-gray-500 bg-transparent focus:outline-none pl-2"
+        />
       </div>
     </div>
   );

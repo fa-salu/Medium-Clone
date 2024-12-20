@@ -27,8 +27,6 @@ export const handleGoogleLogin = createAsyncThunk(
     );
 
     const { token, user } = response.data.data;
-    console.log("token", token);
-    console.log("user", user);
 
     Cookies.set("user", token, {
       expires: 7,
