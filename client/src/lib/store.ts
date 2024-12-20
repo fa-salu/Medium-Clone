@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "@/lib/features/authSlice";
+import uploadReducer from "@/lib/features/uploadSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       user: userReducer,
+      upload: uploadReducer,
     },
   });
 };

@@ -2,13 +2,15 @@ import { useState } from "react";
 import { Notifications } from "@mui/icons-material";
 import { Avatar, Button, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import IconSet from "./addButton";
 
-export default function Bar() {
-  const [showIcons, setShowIcons] = useState(false);
+interface BarProps {
+  showIcons: boolean;
+  setShowIcons: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
+export default function Bar({ showIcons, setShowIcons }: BarProps) {
   const handleAddIconClick = () => {
-    setShowIcons((prev) => !prev);
+    setShowIcons((prev) => !prev); // Toggle the visibility of icons
   };
 
   return (
@@ -30,11 +32,11 @@ export default function Bar() {
         </IconButton>
         <IconButton
           className="p-2 hover:bg-gray-200 rounded-full"
-          onClick={handleAddIconClick}
+          onClick={handleAddIconClick} // Handle click to toggle icons visibility
         >
           <AddCircleIcon />
         </IconButton>
-        {showIcons && <IconSet />}
+
         <IconButton className="p-2 hover:bg-gray-200 rounded-full">
           <Avatar
             alt="Remy Sharp"

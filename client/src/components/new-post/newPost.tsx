@@ -7,12 +7,14 @@ import "medium-editor/dist/css/medium-editor.css";
 import "medium-editor/dist/css/themes/default.css";
 import "medium-editor-insert-plugin/dist/css/medium-editor-insert-plugin.min.css";
 import Bar from "./bar";
+import IconSet from "./addButton";
 
 export default function NewStory() {
   const [title, setTitle] = useState("");
   const [story, setStory] = useState("");
   const titleRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
+  const [showIcons, setShowIcons] = useState(false);
 
   console.log(story);
 
@@ -51,7 +53,8 @@ export default function NewStory() {
 
   return (
     <div>
-      <Bar />
+      <Bar showIcons={showIcons} setShowIcons={setShowIcons} />
+      {showIcons && <IconSet />}
       <div className="flex flex-col px-32 mt-10 space-y-6">
         <div
           ref={titleRef}
