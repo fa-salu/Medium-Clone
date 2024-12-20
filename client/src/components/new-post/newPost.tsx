@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import MediumEditor from "medium-editor";
-// import { marked } from "marked";
 import "medium-editor/dist/css/medium-editor.css";
 import "medium-editor/dist/css/themes/default.css";
 import "medium-editor-insert-plugin/dist/css/medium-editor-insert-plugin.min.css";
@@ -54,7 +53,9 @@ export default function NewStory() {
   return (
     <div>
       <Bar showIcons={showIcons} setShowIcons={setShowIcons} />
-      {showIcons && <IconSet />}
+      {showIcons && (
+        <IconSet storyRef={storyRef as React.RefObject<HTMLDivElement>} />
+      )}
       <div className="flex flex-col px-32 mt-10 space-y-6">
         <div
           ref={titleRef}
