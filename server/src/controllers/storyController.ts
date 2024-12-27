@@ -11,10 +11,6 @@ export const createStory = async (req: CustomRequest, res: Response) => {
   const { title, content, category } = req.body;
   const userId = req.user?.id;
 
-  if (!title || !content) {
-    throw new CustomError("Title and content are required.", 400);
-  }
-
   if (!userId) {
     throw new CustomError("Unauthorized user.", 401);
   }
@@ -32,6 +28,25 @@ export const createStory = async (req: CustomRequest, res: Response) => {
   res
     .status(201)
     .json(new StandardResponse("Story created successfully", newStory));
+};
+
+// update story
+export const updateStorys = async (req: CustomRequest, res: Response) => {
+  const { id } = req.params;
+  const { title, content, category } = req.body;
+
+  const story = await Story.findById(id);
+
+  if (!story) {
+    return res.status(404).json({ message: "Story not found" });
+  }
+
+  story.title = title;
+  story.content = content;
+  story.category = category;
+  await story.save();
+
+  res.status(200).json({ message: "Story updated successfully", story });
 };
 
 // Get all stories

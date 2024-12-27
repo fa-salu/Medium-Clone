@@ -3,7 +3,7 @@ import mongoose, { Schema, type Document } from "mongoose";
 export interface IStory extends Document {
   title: string;
   content: string;
-  category: string;
+  category?: string;
   claps: number;
   likes: number;
   author: mongoose.Schema.Types.ObjectId;
@@ -11,9 +11,9 @@ export interface IStory extends Document {
 }
 
 const StorySchema: Schema = new Schema({
-  title: { type: String, required: true },
-  content: { type: String, required: true },
-  category: { type: String, required: true },
+  title: { type: String, required: false },
+  content: { type: String, required: false },
+  category: { type: String, required: false },
   claps: { type: Number, default: 0 },
   likes: { type: Number, default: 0 },
   author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },

@@ -1,61 +1,71 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MediumEditor from "medium-editor";
 import "medium-editor/dist/css/medium-editor.css";
 import "medium-editor/dist/css/themes/default.css";
-import "medium-editor-insert-plugin/dist/css/medium-editor-insert-plugin.min.css";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  setTitle,
+  setContent,
+  saveOrUpdateStory,
+  loadStoryIdFromCookies,
+} from "@/lib/features/storySlice";
+import debounce from "@/utils/debounce";
 import Bar from "./bar";
 import IconSet from "./addButton";
 
 export default function NewStory() {
-  const [title, setTitle] = useState("");
-  const [story, setStory] = useState("");
+  const dispatch = useAppDispatch();
+  const { title, content, id } = useAppSelector((state) => state.story);
+
   const titleRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
   const [showIcons, setShowIcons] = useState(false);
 
-  console.log(story);
+  useEffect(() => {
+    dispatch(loadStoryIdFromCookies());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const autoSave = debounce(() => {
+      if (title || content || id) {
+        dispatch(saveOrUpdateStory({ title, content, category: "", id }));
+      }
+    }, 2000);
+
+    autoSave();
+  }, [title, content, id, dispatch]);
 
   useEffect(() => {
     if (titleRef.current) {
-      new MediumEditor(titleRef.current, {
+      const editor = new MediumEditor(titleRef.current, {
         placeholder: { text: "Title", hideOnClick: true },
         toolbar: false,
         disableReturn: true,
       });
       titleRef.current.addEventListener("input", (e) => {
-        setTitle((e.target as HTMLDivElement).innerHTML);
+        dispatch(setTitle((e.target as HTMLDivElement).innerHTML));
       });
     }
 
     if (storyRef.current) {
-      new MediumEditor(storyRef.current, {
+      const editor = new MediumEditor(storyRef.current, {
         placeholder: { text: "Tell your story...", hideOnClick: true },
         toolbar: {
-          buttons: [
-            "bold",
-            "italic",
-            "underline",
-            "anchor",
-            "h2",
-            "h3",
-            "quote",
-          ],
+          buttons: ["bold", "italic", "underline", "anchor", "h2", "h3"],
         },
       });
       storyRef.current.addEventListener("input", (e) => {
-        setStory((e.target as HTMLDivElement).innerHTML);
+        dispatch(setContent((e.target as HTMLDivElement).innerHTML));
       });
     }
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
       <Bar showIcons={showIcons} setShowIcons={setShowIcons} />
-      {showIcons && (
-        <IconSet storyRef={storyRef as React.RefObject<HTMLDivElement>} />
-      )}
+      <IconSet storyRef={storyRef as React.RefObject<HTMLDivElement>} />
       <div className="flex flex-col px-32 mt-10 space-y-6">
         <div
           ref={titleRef}

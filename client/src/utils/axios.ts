@@ -11,14 +11,10 @@ const axiosInstance = axios.create({
 //? request interceptor to attach the token to the Authorization header
 axiosInstance.interceptors.request.use(
   (config) => {
-    const userCookie = Cookies.get("user");
-    if (userCookie) {
-      const user = JSON.parse(userCookie);
-      const token = user.token;
+    const token = Cookies.get("user");
 
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

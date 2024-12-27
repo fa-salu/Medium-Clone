@@ -9,7 +9,6 @@ export const uploadFile = async (
 ): Promise<void> => {
   try {
     const file = req.file;
-    console.log("Received file:", file);
 
     if (!file) {
       res.status(400).json({ error: "No file uploaded." });
@@ -29,7 +28,6 @@ export const uploadFile = async (
               details: error,
             });
           } else {
-            console.log("Cloudinary upload result:", result); // Log Cloudinary response
             res.status(200).json({ url: result?.secure_url });
           }
         }
