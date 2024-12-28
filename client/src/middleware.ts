@@ -9,6 +9,16 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const pathname = url.pathname;
 
+  // Handle `/` route
+  if (pathname === "/") {
+    if (token) {
+      url.pathname = "/u-home";
+    } else {
+      url.pathname = "/home";
+    }
+    return NextResponse.redirect(url);
+  }
+
   if (!token && isUserProtectedRoute(pathname)) {
     url.pathname = "/home";
     return NextResponse.redirect(url);

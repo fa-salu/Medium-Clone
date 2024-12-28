@@ -8,8 +8,10 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { uploadImage, resetImage } from "@/lib/features/uploadSlice";
 
 export default function IconSet({
+  showIcons,
   storyRef,
 }: {
+  showIcons: boolean;
   storyRef: React.RefObject<HTMLDivElement>;
 }) {
   const [showImageUpload, setShowImageUpload] = useState(false);
@@ -33,7 +35,6 @@ export default function IconSet({
     if (imageUrl && storyRef.current) {
       const editor = storyRef.current as HTMLDivElement;
 
-      // Create an image element
       const imgElement = document.createElement("img");
       imgElement.src = imageUrl;
       imgElement.alt = "uploaded-image";
@@ -45,19 +46,23 @@ export default function IconSet({
   }, [imageUrl, storyRef, dispatch]);
 
   return (
-    <div className="absolute right-40 top-20 flex space-x-2 bg-white shadow-md p-4">
-      <AddPhotoAlternateIcon onClick={() => setShowImageUpload(true)} />
-      {showImageUpload && (
-        <input
-          type="file"
-          onChange={handleImageUpload}
-          className="border p-2"
-        />
+    <>
+      {showIcons && (
+        <div className="absolute right-40 top-20 flex space-x-2 bg-white shadow-md p-4">
+          <AddPhotoAlternateIcon onClick={() => setShowImageUpload(true)} />
+          {showImageUpload && (
+            <input
+              type="file"
+              onChange={handleImageUpload}
+              className="border p-2"
+            />
+          )}
+          <VideoLibraryIcon />
+          <InsertDriveFileIcon />
+          <CodeIcon />
+          <MoreHorizIcon />
+        </div>
       )}
-      <VideoLibraryIcon />
-      <InsertDriveFileIcon />
-      <CodeIcon />
-      <MoreHorizIcon />
-    </div>
+    </>
   );
 }

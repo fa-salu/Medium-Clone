@@ -80,8 +80,11 @@ export default function NewStory() {
 
   return (
     <div>
-      <Bar showIcons={showIcons} setShowIcons={setShowIcons} />
-      <IconSet storyRef={storyRef as React.RefObject<HTMLDivElement>} />
+      <Bar setShowIcons={setShowIcons} />
+      <IconSet
+        storyRef={storyRef as React.RefObject<HTMLDivElement>}
+        showIcons={showIcons}
+      />
       <div className="flex flex-col px-32 mt-10 space-y-6">
         <div
           ref={titleRef}

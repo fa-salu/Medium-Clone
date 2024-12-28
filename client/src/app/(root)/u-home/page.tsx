@@ -1,17 +1,16 @@
-"use client";
-
-import React from "react";
 import Navbar from "@/components/Navbar/Navbar";
-import MainContent from "@/components/u-home/mainContent";
-import RightSidebar from "@/components/u-home/rightSidebar";
+import MainFeed from "@/components/u-home/MainFeed";
+import Sidebar from "@/components/u-home/sideBar";
 export default function Page() {
   return (
     <div>
       <div className="min-h-screen bg-white">
         <Navbar />
-        <div className="flex max-w-6xl mx-auto mt-8">
-          <MainContent />
-          <RightSidebar />
+        <div className="flex p-8 space-x-8">
+          <div className="w-2/3">
+            <MainFeed />
+          </div>
+          <Sidebar />
         </div>
       </div>
     </div>

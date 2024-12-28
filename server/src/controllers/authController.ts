@@ -2,10 +2,11 @@ import jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
 import { UserModel } from "../models/userModel";
 import { StandardResponse } from "../utils/standardResponse";
+import type { CustomRequest } from "../types/interfaces";
 
-const JWT_SECRET = process.env.JWT_SECRET_KEY || "sldfkj83owurjfw8eio"; // Replace with a secure key in .env
+const JWT_SECRET = process.env.JWT_SECRET_KEY || "sldfkj83owurjfw8eio";
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: CustomRequest, res: Response) => {
   const { name, email, imageUri } = req.body;
 
   if (!name || !email || !imageUri) {

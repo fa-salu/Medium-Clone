@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "miro.medium.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+      },
     ],
   },
 };

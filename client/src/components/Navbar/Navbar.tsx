@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
-import { Avatar, Menu, MenuItem, IconButton } from "@mui/material";
+import { Menu, MenuItem, IconButton } from "@mui/material";
 import { Notifications, Create } from "@mui/icons-material";
 import Cookies from "js-cookie";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import AvatarComponent from "@/components/Navbar/avatar";
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -49,10 +50,7 @@ export default function Navbar() {
         </IconButton>
 
         <IconButton onClick={handleMenuClick}>
-          <Avatar
-            alt="Remy Sharp"
-            src="https://img.freepik.com/premium-vector/avatar-icon0002_750950-43.jpg?ga=GA1.1.478860807.1733286450&semt=ais_hybrid"
-          />
+          <AvatarComponent /> {/* Render the AvatarComponent */}
         </IconButton>
 
         <Menu

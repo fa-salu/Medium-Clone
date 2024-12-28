@@ -7,12 +7,31 @@ import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
 import type { RootState } from "../store";
 
+interface AuthorDetails {
+  email: string;
+  imageUri: string;
+  name: string;
+}
+
+interface Article {
+  _id: string;
+  title: string;
+  content: string;
+  category: string;
+  createdAt: string;
+  claps: number;
+  likes: number;
+  authorDetails: AuthorDetails;
+  imageUri: string;
+}
+
 interface StoryState {
   title: string;
   content: string;
   category: string;
   id: string | null;
   isSaving: boolean;
+  articles: Article[];
 }
 
 const initialState: StoryState = {
@@ -21,6 +40,7 @@ const initialState: StoryState = {
   category: "",
   id: null,
   isSaving: false,
+  articles: [],
 };
 
 export const fetchStory = createAsyncThunk(
@@ -28,9 +48,21 @@ export const fetchStory = createAsyncThunk(
   async (storyId: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/api/stories/${storyId}`);
-      return response.data.data; // Assuming the story data is in response.data.data
+      return response.data.data;
     } catch (error) {
       return rejectWithValue("Failed to fetch story");
+    }
+  }
+);
+
+export const fetchAllStories = createAsyncThunk(
+  "story/fetchAllStories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get("/api/stories");
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch stories");
     }
   }
 );
@@ -77,6 +109,7 @@ const storySlice = createSlice({
     setTitle(state, action: PayloadAction<string>) {
       state.title = action.payload;
     },
+
     setContent(state, action: PayloadAction<string>) {
       state.content = action.payload;
     },
@@ -89,6 +122,9 @@ const storySlice = createSlice({
         state.id = storyId;
       }
     },
+    resetStory(state) {
+      Object.assign(state, initialState);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -97,6 +133,10 @@ const storySlice = createSlice({
         state.title = title;
         state.content = content;
       })
+      .addCase(fetchAllStories.fulfilled, (state, action) => {
+        state.articles = action.payload || []; // Populate articles
+      })
+
       .addCase(saveOrUpdateStory.pending, (state) => {
         state.isSaving = true;
       })
@@ -110,6 +150,11 @@ const storySlice = createSlice({
   },
 });
 
-export const { setTitle, setContent, setCategory, loadStoryIdFromCookies } =
-  storySlice.actions;
+export const {
+  setTitle,
+  setContent,
+  setCategory,
+  loadStoryIdFromCookies,
+  resetStory,
+} = storySlice.actions;
 export default storySlice.reducer;

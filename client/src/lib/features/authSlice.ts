@@ -1,5 +1,6 @@
+import axiosInstance from "@/utils/axios";
+import { axiosErrorCatch } from "@/utils/axios-ErrorCatch";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import Cookies from "js-cookie";
 
 interface UserState {
@@ -18,13 +19,11 @@ const initialState: UserState = {
   error: null,
 };
 
+// Async thunk for Google login
 export const handleGoogleLogin = createAsyncThunk(
   "user/login",
   async (userDetails: { name: string; email: string; imageUri: string }) => {
-    const response = await axios.post(
-      "http://localhost:3001/api/auth/login",
-      userDetails
-    );
+    const response = await axiosInstance.post("/api/auth/login", userDetails);
 
     const { token, user } = response.data.data;
 
@@ -35,6 +34,20 @@ export const handleGoogleLogin = createAsyncThunk(
     });
 
     return user;
+  }
+);
+
+// Async thunk for fetching user details
+export const fetchUserDetails = createAsyncThunk(
+  "user/fetchUserDetails",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get("/api/user");
+      return response.data.data;
+    } catch (error) {
+      axiosErrorCatch(error);
+      return rejectWithValue("Failed to fetch user details");
+    }
   }
 );
 
@@ -51,6 +64,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Google login
       .addCase(handleGoogleLogin.pending, (state) => {
         state.status = "loading";
       })
@@ -61,6 +75,19 @@ const userSlice = createSlice({
       .addCase(handleGoogleLogin.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to login";
+      })
+
+      // Fetch user details
+      .addCase(fetchUserDetails.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchUserDetails.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+      })
+      .addCase(fetchUserDetails.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
       });
   },
 });

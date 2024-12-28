@@ -1,16 +1,15 @@
-import { useState } from "react";
 import { Notifications } from "@mui/icons-material";
-import { Avatar, Button, IconButton } from "@mui/material";
+import { Avatar, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import PublishButton from "@/components/new-post/publishButton"; // Import the new PublishButton component
 
 interface BarProps {
-  showIcons: boolean;
   setShowIcons: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Bar({ showIcons, setShowIcons }: BarProps) {
+export default function Bar({ setShowIcons }: BarProps) {
   const handleAddIconClick = () => {
-    setShowIcons((prev) => !prev); // Toggle the visibility of icons
+    setShowIcons((prev) => !prev);
   };
 
   return (
@@ -20,23 +19,16 @@ export default function Bar({ showIcons, setShowIcons }: BarProps) {
         <p className="text-sm ml-3 text-gray-500">Draft in Fasalu</p>
       </div>
       <div className="flex items-center space-x-6">
-        <Button
-          variant="contained"
-          color="success"
-          className="text-sm py-2 px-4 rounded-md"
-        >
-          Publish
-        </Button>
+        <PublishButton />
         <IconButton className="p-2 hover:bg-gray-200 rounded-full">
           <Notifications />
         </IconButton>
         <IconButton
           className="p-2 hover:bg-gray-200 rounded-full"
-          onClick={handleAddIconClick} // Handle click to toggle icons visibility
+          onClick={handleAddIconClick}
         >
           <AddCircleIcon />
         </IconButton>
-
         <IconButton className="p-2 hover:bg-gray-200 rounded-full">
           <Avatar
             alt="Remy Sharp"
