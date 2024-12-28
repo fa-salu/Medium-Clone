@@ -10,6 +10,7 @@ import {
   setContent,
   saveOrUpdateStory,
   loadStoryIdFromCookies,
+  fetchStory,
 } from "@/lib/features/storySlice";
 import debounce from "@/utils/debounce";
 import Bar from "./bar";
@@ -28,6 +29,12 @@ export default function NewStory() {
   }, [dispatch]);
 
   useEffect(() => {
+    if (id) {
+      dispatch(fetchStory(id));
+    }
+  }, [id, dispatch]);
+
+  useEffect(() => {
     const autoSave = debounce(() => {
       if (title || content || id) {
         dispatch(saveOrUpdateStory({ title, content, category: "", id }));
@@ -39,7 +46,7 @@ export default function NewStory() {
 
   useEffect(() => {
     if (titleRef.current) {
-      const editor = new MediumEditor(titleRef.current, {
+      const titleEditor = new MediumEditor(titleRef.current, {
         placeholder: { text: "Title", hideOnClick: true },
         toolbar: false,
         disableReturn: true,
@@ -50,7 +57,7 @@ export default function NewStory() {
     }
 
     if (storyRef.current) {
-      const editor = new MediumEditor(storyRef.current, {
+      const storyEditor = new MediumEditor(storyRef.current, {
         placeholder: { text: "Tell your story...", hideOnClick: true },
         toolbar: {
           buttons: ["bold", "italic", "underline", "anchor", "h2", "h3"],
@@ -61,6 +68,15 @@ export default function NewStory() {
       });
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (titleRef.current && titleRef.current.innerHTML !== title) {
+      titleRef.current.innerHTML = title;
+    }
+    if (storyRef.current && storyRef.current.innerHTML !== content) {
+      storyRef.current.innerHTML = content;
+    }
+  }, [title, content]);
 
   return (
     <div>

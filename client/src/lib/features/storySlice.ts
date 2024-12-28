@@ -23,6 +23,18 @@ const initialState: StoryState = {
   isSaving: false,
 };
 
+export const fetchStory = createAsyncThunk(
+  "story/fetchStory",
+  async (storyId: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/api/stories/${storyId}`);
+      return response.data.data; // Assuming the story data is in response.data.data
+    } catch (error) {
+      return rejectWithValue("Failed to fetch story");
+    }
+  }
+);
+
 export const saveOrUpdateStory = createAsyncThunk(
   "story/saveOrUpdate",
   async (
@@ -80,6 +92,11 @@ const storySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchStory.fulfilled, (state, action) => {
+        const { title, content } = action.payload;
+        state.title = title;
+        state.content = content;
+      })
       .addCase(saveOrUpdateStory.pending, (state) => {
         state.isSaving = true;
       })

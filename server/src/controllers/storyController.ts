@@ -49,6 +49,26 @@ export const updateStorys = async (req: CustomRequest, res: Response) => {
   res.status(200).json({ message: "Story updated successfully", story });
 };
 
+// Fetch Story
+export const fetchStory = async (req: CustomRequest, res: Response) => {
+  const storyId = req.params.id; // Getting story ID from request params
+
+  if (!storyId) {
+    throw new CustomError("Story ID is required", 400); // Custom error if no ID is provided
+  }
+
+  const story = await Story.findById(storyId);
+
+  if (!story) {
+    throw new CustomError("Story not found", 404); // Custom error if the story does not exist
+  }
+
+  // Returning success response with the story data
+  res
+    .status(200)
+    .json(new StandardResponse("Story fetched successfully", story));
+};
+
 // Get all stories
 export const getAllStories = async (req: CustomRequest, res: Response) => {
   const stories = await Story.aggregate([
