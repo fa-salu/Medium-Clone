@@ -37,7 +37,16 @@ export default function NewStory() {
   useEffect(() => {
     const autoSave = debounce(() => {
       if (title || content || id) {
-        dispatch(saveOrUpdateStory({ title, content, category: "", id }));
+        dispatch(
+          saveOrUpdateStory({
+            title,
+            content,
+            category: "",
+            id,
+            articles: [],
+            error: null,
+          })
+        );
       }
     }, 2000);
 

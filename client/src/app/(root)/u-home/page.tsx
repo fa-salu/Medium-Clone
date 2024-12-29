@@ -6,7 +6,7 @@ export default function Page() {
     <div>
       <div className="min-h-screen bg-white">
         <Navbar />
-        <div className="flex p-8 space-x-8">
+        <div className="flex relative top-20 px-12 space-x-8">
           <div className="w-2/3">
             <MainFeed />
           </div>

@@ -32,6 +32,7 @@ interface StoryState {
   id: string | null;
   isSaving: boolean;
   articles: Article[];
+  error: string | null; // Add an error property to store error messages
 }
 
 const initialState: StoryState = {
@@ -41,6 +42,7 @@ const initialState: StoryState = {
   id: null,
   isSaving: false,
   articles: [],
+  error: null, // Initialize error as null
 };
 
 export const fetchStory = createAsyncThunk(
@@ -57,9 +59,14 @@ export const fetchStory = createAsyncThunk(
 
 export const fetchAllStories = createAsyncThunk(
   "story/fetchAllStories",
-  async (_, { rejectWithValue }) => {
+  async (category: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/api/stories");
+      const response = await axiosInstance.get(
+        `/api/stories?category=${category}`
+      );
+      if (response.status === 404) {
+        return rejectWithValue("No articles available in this category");
+      }
       return response.data.data;
     } catch (error) {
       return rejectWithValue("Failed to fetch stories");
@@ -73,7 +80,6 @@ export const saveOrUpdateStory = createAsyncThunk(
     story: Omit<StoryState, "isSaving">,
     { rejectWithValue, getState }
   ) => {
-    console.log("sss", story);
     try {
       const { id: existingId } = (getState() as RootState).story;
       const storyIdFromCookies = Cookies.get("storyId");
@@ -84,10 +90,8 @@ export const saveOrUpdateStory = createAsyncThunk(
       let response;
 
       if (storyId) {
-        console.log("Updating story:", story);
         response = await axiosInstance.put(`/api/stories/${storyId}`, story);
       } else {
-        console.log("Creating new story:", story);
         response = await axiosInstance.post("/api/stories", story);
 
         if (response.data.data._id && !storyId) {
@@ -109,7 +113,6 @@ const storySlice = createSlice({
     setTitle(state, action: PayloadAction<string>) {
       state.title = action.payload;
     },
-
     setContent(state, action: PayloadAction<string>) {
       state.content = action.payload;
     },
@@ -134,9 +137,13 @@ const storySlice = createSlice({
         state.content = content;
       })
       .addCase(fetchAllStories.fulfilled, (state, action) => {
-        state.articles = action.payload || []; // Populate articles
+        state.articles = action.payload || [];
+        state.error = null; // Reset any previous errors
       })
-
+      .addCase(fetchAllStories.rejected, (state, action) => {
+        state.error = action.payload as string; // Set error state when the API call fails
+        state.articles = []; // Optionally reset articles to empty if there is an error
+      })
       .addCase(saveOrUpdateStory.pending, (state) => {
         state.isSaving = true;
       })

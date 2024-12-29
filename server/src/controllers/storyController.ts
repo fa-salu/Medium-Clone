@@ -70,7 +70,13 @@ export const fetchStory = async (req: CustomRequest, res: Response) => {
 
 // Get all stories
 export const getAllStories = async (req: CustomRequest, res: Response) => {
+  const { category } = req.query;
+  const filter = category && category !== "For You" ? { category } : {};
+
   const stories = await Story.aggregate([
+    {
+      $match: filter,
+    },
     {
       $lookup: {
         from: "users",
@@ -101,7 +107,9 @@ export const getAllStories = async (req: CustomRequest, res: Response) => {
   ]);
 
   if (!stories || stories.length === 0) {
-    throw new CustomError("No stories found.", 404);
+    return res
+      .status(404)
+      .json({ message: "No stories found in this category." });
   }
 
   res

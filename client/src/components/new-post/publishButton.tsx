@@ -43,13 +43,15 @@ export default function PublishButton() {
         category,
         id: null,
         content,
+        articles: [],
+        error: null,
       })
     ).then(() => {
-      Cookies.remove("storyId"); // Remove storyId from cookies after updating
-      dispatch(loadStoryIdFromCookies()); // Reload storyId in case of further operations
+      Cookies.remove("storyId");
+      dispatch(loadStoryIdFromCookies());
       dispatch(resetStory());
       router.push("/u-home");
-      handleClose(); // Close the dialog
+      handleClose();
     });
   };
 

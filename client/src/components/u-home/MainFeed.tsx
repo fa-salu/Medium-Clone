@@ -7,7 +7,7 @@ import {
   MoreHoriz,
 } from "@mui/icons-material";
 import CategoryBar from "./categoryBar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchAllStories } from "@/lib/features/storySlice";
 import type { RootState } from "@/lib/store";
@@ -16,18 +16,26 @@ import Image from "next/image";
 
 export default function MainFeed() {
   const dispatch = useAppDispatch();
+  const [selectedCategory] = useState("For You");
   const articles = useSelector((state: RootState) => state.story.articles);
-  console.log("articles:", articles);
+
+  console.log("articalles:", articles.length);
 
   useEffect(() => {
-    dispatch(fetchAllStories());
-  }, [dispatch]);
+    dispatch(fetchAllStories(selectedCategory));
+  }, [dispatch, selectedCategory]);
+
+  const noArticles = !articles || articles.length === 0;
 
   return (
     <div className="space-y-6">
       <CategoryBar />
 
-      {articles && articles.length > 0 ? (
+      {noArticles ? (
+        <p className="text-center text-gray-500">
+          No articles available in this category.
+        </p>
+      ) : (
         articles.map((article) => (
           <div
             key={article._id}
@@ -48,7 +56,7 @@ export default function MainFeed() {
                 {article.title}
               </h2>
               <img
-                src={article.imageUri || "/default-image.jpg"}
+                src={article.imageUri}
                 alt={article.title}
                 className="w-24 h-24 object-cover rounded-lg"
               />
@@ -74,8 +82,6 @@ export default function MainFeed() {
             </div>
           </div>
         ))
-      ) : (
-        <p className="text-center text-gray-500">No articles available.</p>
       )}
     </div>
   );

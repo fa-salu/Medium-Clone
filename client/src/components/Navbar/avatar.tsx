@@ -24,12 +24,18 @@ export default function AvatarComponent() {
   }
 
   return (
-    <Image
-      alt={user?.name || "User Avatar"}
-      src={user?.imageUri || "/default-avatar.jpg"}
-      width={30}
-      height={30}
-      className="rounded-full"
-    />
+    <div>
+      {user?.imageUri ? (
+        <Image
+          alt={user.name || "User Avatar"}
+          src={user.imageUri}
+          width={30}
+          height={30}
+          className="rounded-full"
+        />
+      ) : (
+        <div className="w-8 h-8 bg-gray-300 rounded-full" />
+      )}
+    </div>
   );
 }
