@@ -7,6 +7,7 @@ import { SavedCollectionModel } from "../models/savedModel";
 import mongoose from "mongoose";
 
 export const savedStory = async (req: CustomRequest, res: Response) => {
+  console.log(req.body);
   const { storyId, collectionName } = req.body;
   const userId = req.user?.id;
 

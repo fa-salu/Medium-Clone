@@ -174,60 +174,9 @@ export const deleteStory = async (req: CustomRequest, res: Response) => {
     .json(new StandardResponse("Story deleted successfully", null));
 };
 
-// Update likes
-export const updateLikes = async (req: CustomRequest, res: Response) => {
-  const { storyId } = req.params;
-  const { increment } = req.body;
-  const userId = req.user?.id;
-
-  if (!storyId) {
-    throw new CustomError("Story ID is required.", 400);
-  }
-
-  const storyObjectId = new mongoose.Types.ObjectId(storyId);
-
-  const story = await Story.findById(storyObjectId);
-
-  if (!story) {
-    throw new CustomError("Story not found.", 404);
-  }
-
-  const user = await UserModel.findById(userId);
-
-  if (!user) {
-    throw new CustomError("User not found.", 404);
-  }
-
-  if (increment) {
-    if (!user.likedPosts.includes(storyObjectId)) {
-      user.likedPosts.push(storyObjectId);
-      story.likes += 1;
-    } else {
-      throw new CustomError("You have already liked this story.", 400);
-    }
-  } else {
-    if (user.likedPosts.includes(storyObjectId)) {
-      user.likedPosts = user.likedPosts.filter(
-        (id) => id.toString() !== storyObjectId.toString()
-      );
-      story.likes = Math.max(0, story.likes - 1);
-    } else {
-      throw new CustomError("You have not liked this story yet.", 400);
-    }
-  }
-
-  await user.save();
-  await story.save();
-
-  res
-    .status(200)
-    .json(new StandardResponse("Likes updated successfully", story));
-};
-
 // Update claps
 export const updateClaps = async (req: CustomRequest, res: Response) => {
   const { storyId } = req.params;
-  const { increment } = req.body;
   const userId = req.user?.id;
 
   if (!storyId) {
@@ -248,22 +197,16 @@ export const updateClaps = async (req: CustomRequest, res: Response) => {
     throw new CustomError("User not found.", 404);
   }
 
-  if (increment) {
-    if (!user.clappedPosts.includes(storyObjectId)) {
-      user.clappedPosts.push(storyObjectId);
-      story.claps += 1;
-    } else {
-      throw new CustomError("You have already liked this story.", 400);
-    }
+  const hasClapped = user.clappedPosts.includes(storyObjectId);
+
+  if (hasClapped) {
+    user.clappedPosts = user.clappedPosts.filter(
+      (id) => id.toString() !== storyObjectId.toString()
+    );
+    story.claps = Math.max(0, story.claps - 1);
   } else {
-    if (user.clappedPosts.includes(storyObjectId)) {
-      user.clappedPosts = user.clappedPosts.filter(
-        (id) => id.toString() !== storyObjectId.toString()
-      );
-      story.claps = Math.max(0, story.claps - 1);
-    } else {
-      throw new CustomError("You have not liked this story yet.", 400);
-    }
+    user.clappedPosts.push(storyObjectId);
+    story.claps += 1;
   }
 
   await user.save();
@@ -271,5 +214,5 @@ export const updateClaps = async (req: CustomRequest, res: Response) => {
 
   res
     .status(200)
-    .json(new StandardResponse("Likes updated successfully", story));
+    .json(new StandardResponse("Likes toggled successfully", story));
 };

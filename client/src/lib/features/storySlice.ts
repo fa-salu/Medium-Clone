@@ -25,6 +25,11 @@ interface Article {
   imageUri: string;
 }
 
+interface SavedCollection {
+  collectionName: string;
+  storyDetails: Article[];
+}
+
 interface StoryState {
   title: string;
   content: string;
@@ -32,7 +37,8 @@ interface StoryState {
   id: string | null;
   isSaving: boolean;
   articles: Article[];
-  error: string | null; // Add an error property to store error messages
+  savedCollections: SavedCollection[];
+  error: string | null;
 }
 
 const initialState: StoryState = {
@@ -42,7 +48,8 @@ const initialState: StoryState = {
   id: null,
   isSaving: false,
   articles: [],
-  error: null, // Initialize error as null
+  savedCollections: [],
+  error: null,
 };
 
 export const fetchStory = createAsyncThunk(
@@ -106,6 +113,51 @@ export const saveOrUpdateStory = createAsyncThunk(
   }
 );
 
+export const addClaps = createAsyncThunk(
+  "story/addClaps",
+  async ({ storyId }: { storyId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(
+        `/api/stories/${storyId}/claps`
+      );
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue("Failed to update claps");
+    }
+  }
+);
+
+export const saveStoryToCollection = createAsyncThunk(
+  "story/saveToCollection",
+  async (
+    { storyId, collectionName }: { storyId: string; collectionName: string },
+    { rejectWithValue }
+  ) => {
+    console.log("from slice:", storyId, collectionName);
+    try {
+      const response = await axiosInstance.post("/api/save-story", {
+        storyId,
+        collectionName,
+      });
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue("Failed to save story to collection");
+    }
+  }
+);
+
+export const fetchSavedCollections = createAsyncThunk(
+  "story/fetchSavedCollections",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get("/api/save-collection");
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch saved collections");
+    }
+  }
+);
+
 const storySlice = createSlice({
   name: "story",
   initialState,
@@ -138,11 +190,11 @@ const storySlice = createSlice({
       })
       .addCase(fetchAllStories.fulfilled, (state, action) => {
         state.articles = action.payload || [];
-        state.error = null; // Reset any previous errors
+        state.error = null;
       })
       .addCase(fetchAllStories.rejected, (state, action) => {
-        state.error = action.payload as string; // Set error state when the API call fails
-        state.articles = []; // Optionally reset articles to empty if there is an error
+        state.error = action.payload as string;
+        state.articles = [];
       })
       .addCase(saveOrUpdateStory.pending, (state) => {
         state.isSaving = true;
@@ -153,6 +205,53 @@ const storySlice = createSlice({
       })
       .addCase(saveOrUpdateStory.rejected, (state) => {
         state.isSaving = false;
+      })
+      .addCase(addClaps.fulfilled, (state, action) => {
+        const updatedStory = action.payload;
+        const index = state.articles.findIndex(
+          (story) => story._id === updatedStory._id
+        );
+        if (index !== -1) {
+          state.articles[index].claps = updatedStory.claps;
+        }
+      })
+      .addCase(addClaps.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(saveStoryToCollection.fulfilled, (state, action) => {
+        const { storyId, collectionName } = action.payload;
+        const collection = state.savedCollections.find(
+          (c) => c.collectionName === collectionName
+        );
+
+        if (collection) {
+          const storyExists = collection.storyDetails.some(
+            (story) => story?._id === storyId
+          );
+          if (storyExists) {
+            collection.storyDetails = collection.storyDetails.filter(
+              (story) => story._id !== storyId
+            );
+          } else {
+            collection.storyDetails.push(action.payload.storyDetails);
+          }
+        } else {
+          state.savedCollections.push({
+            collectionName,
+            storyDetails: [action.payload.storyDetails],
+          });
+        }
+      })
+      .addCase(saveStoryToCollection.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(fetchSavedCollections.fulfilled, (state, action) => {
+        state.savedCollections = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchSavedCollections.rejected, (state, action) => {
+        state.error = action.payload as string;
+        state.savedCollections = [];
       });
   },
 });

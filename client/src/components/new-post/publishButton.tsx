@@ -45,6 +45,7 @@ export default function PublishButton() {
         content,
         articles: [],
         error: null,
+        savedCollections: [],
       })
     ).then(() => {
       Cookies.remove("storyId");

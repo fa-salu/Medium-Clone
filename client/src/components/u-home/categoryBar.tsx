@@ -39,7 +39,7 @@ export default function CategoryBar() {
   };
 
   return (
-    <div className="flex sticky top-0 space-x-4 overflow-x-auto scrollbar-hide p-4 border-b bg-white">
+    <div className="flex sticky top-0 space-x-4 overflow-x-auto  p-4 border-b bg-white">
       <ChevronLeft
         className="cursor-pointer text-gray-800"
         onClick={() => scrollContainer("left")}

@@ -30,6 +30,7 @@ export default function LoginDialog({
   const { data: session } = useSession();
 
   React.useEffect(() => {
+    console.log("first");
     if (session) {
       const userDetails = {
         name: session.user?.name || "",

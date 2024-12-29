@@ -4,7 +4,6 @@ import {
   getAllStories,
   updateStory,
   deleteStory,
-  updateLikes,
   updateClaps,
   updateStorys,
   fetchStory,
@@ -21,7 +20,6 @@ router.get("/stories/:id", verifyToken, errorCatch(fetchStory));
 router.get("/stories", errorCatch(getAllStories));
 router.put("/stories/:storyId", verifyToken, errorCatch(updateStory));
 router.delete("/stories/:storyId", verifyToken, errorCatch(deleteStory));
-router.post("/stories/:storyId/likes", verifyToken, errorCatch(updateLikes));
 router.post("/stories/:storyId/claps", verifyToken, errorCatch(updateClaps));
 
 export default router;
