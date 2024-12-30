@@ -8,6 +8,7 @@ import storyRoutes from "./routes/storyRoutes";
 import savedStory from "./routes/saveRoutes";
 import uploadRoutes from "./routes/uploadRoutes";
 import userRoutes from "./routes/userRoutes";
+import topicRoutes from "./routes/topicsRoutes";
 
 dotenv.config();
 const app = express();
@@ -20,7 +21,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
-app.use("/api", storyRoutes, savedStory, uploadRoutes);
+app.use("/api", storyRoutes, savedStory, uploadRoutes, topicRoutes);
 
 const PORT = process.env.PORT || 3001;
 

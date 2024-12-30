@@ -5,12 +5,14 @@ import {
   deleteStory,
   fetchStoryByAuthor,
   saveStoryToCollection,
+  fetchSavedCollections,
 } from "@/lib/features/storySlice";
 import type { RootState } from "@/lib/store";
 import { ThumbUpAltOutlined, ChatBubbleOutline } from "@mui/icons-material";
 import BookmarkPopover from "../ui/savedStoryPopover";
 import { useAppDispatch } from "@/lib/hooks";
 import MoreOptionsPopover from "../ui/moreOptionProfile";
+import Image from "next/image";
 
 interface StoryListProps {
   selectedTab: string;
@@ -22,7 +24,9 @@ export default function StoryList({ selectedTab }: StoryListProps) {
   const collections = useSelector(
     (state: RootState) => state.story.savedCollections
   );
-  const authorId = useSelector((state: RootState) => state.user.user?._id);
+
+  const author = useSelector((state: RootState) => state.user.user);
+  const authorId = author?._id;
 
   const handleClap = (storyId: string) => {
     dispatch(addClaps({ storyId }));
@@ -54,10 +58,14 @@ export default function StoryList({ selectedTab }: StoryListProps) {
   useEffect(() => {
     if (authorId) {
       dispatch(fetchStoryByAuthor({ authorId }));
+      dispatch(fetchSavedCollections());
     }
   }, [authorId, dispatch]);
 
+  const storiesCount = collections.length;
+
   const noArticles = !articles || articles.length === 0;
+  const noCollections = !collections || collections.length === 0;
 
   return (
     <div className="space-y-4 mt-6">
@@ -120,6 +128,41 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                     />
                   </div>
                 </div>
+              </div>
+            ))
+          )}
+        </>
+      ) : selectedTab === "List" ? (
+        <>
+          {noCollections ? (
+            <p className="text-center text-gray-500">
+              No collections available.
+            </p>
+          ) : (
+            collections.map((collection) => (
+              <div
+                key={collection.collectionName}
+                className="p-4 border-b space-y-2"
+              >
+                <div className="flex pb-3 ">
+                  {author?.imageUri && (
+                    <Image
+                      src={author?.imageUri}
+                      alt={author?.name}
+                      width={25}
+                      height={25}
+                      className="rounded-full bg-gray-500"
+                    />
+                  )}
+                  <p>{author?.name}</p>
+                </div>
+                <h2 className="text-lg font-semibold">
+                  {collection.collectionName}
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {collection.stories.flat().length}{" "}
+                  {collection.stories.flat().length === 1 ? "story" : "stories"}
+                </p>
               </div>
             ))
           )}

@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const isUserProtectedRoute = (route: string) =>
-  route.startsWith("/u-home") || route.startsWith("/new-story");
+  route.startsWith("/u-home") ||
+  route.startsWith("/new-story") ||
+  route.startsWith("/profile") ||
+  route.startsWith("/settings");
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("user")?.value;

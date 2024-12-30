@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -6,6 +6,11 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  CircularProgress,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import {
@@ -19,6 +24,7 @@ import Cookies from "js-cookie";
 import type { RootState } from "@/lib/store";
 import { useAppDispatch } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
+import { fetchTopics } from "@/lib/features/topicSlice";
 
 export default function PublishButton() {
   const [open, setOpen] = useState(false);
@@ -27,6 +33,12 @@ export default function PublishButton() {
   const { title, category, content } = useSelector(
     (state: RootState) => state.story
   );
+
+  const { topics, loading } = useSelector((state: RootState) => state.topic);
+
+  useEffect(() => {
+    dispatch(fetchTopics());
+  }, [dispatch]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -76,13 +88,30 @@ export default function PublishButton() {
             value={title}
             onChange={(e) => dispatch(setTitle(e.target.value))}
           />
-          <TextField
-            label="Category"
-            fullWidth
-            margin="normal"
-            value={category}
-            onChange={(e) => dispatch(setCategory(e.target.value))}
-          />
+
+          {/* Category Selection (Topic Dropdown) */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Category</InputLabel>
+            <Select
+              value={category || ""}
+              onChange={(e) => dispatch(setCategory(e.target.value))}
+              label="Category"
+            >
+              {loading ? (
+                <MenuItem disabled>
+                  <CircularProgress size={24} />
+                </MenuItem>
+              ) : topics && topics.length > 0 ? (
+                topics.map((topic) => (
+                  <MenuItem key={topic} value={topic}>
+                    {topic}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>No topics available</MenuItem>
+              )}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">

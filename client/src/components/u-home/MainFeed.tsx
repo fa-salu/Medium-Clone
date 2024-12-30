@@ -1,7 +1,7 @@
 "use client";
 
 import { ThumbUpAltOutlined, ChatBubbleOutline } from "@mui/icons-material";
-import CategoryBar from "./topicsBar";
+import TopicBar from "./topicsBar";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -26,8 +26,8 @@ export default function MainFeed() {
   const noArticles = !articles || articles.length === 0;
 
   useEffect(() => {
-    dispatch(fetchAllStories("For You")); // Example category
-    dispatch(fetchSavedCollections()); // Fetch collections on component mount
+    dispatch(fetchAllStories("For You"));
+    dispatch(fetchSavedCollections());
   }, [dispatch]);
 
   const handleClap = (storyId: string) => {
@@ -55,8 +55,8 @@ export default function MainFeed() {
   };
 
   return (
-    <div className="space-y-6">
-      <CategoryBar />
+    <div className="space-y-6 ">
+      <TopicBar />
 
       {noArticles ? (
         <p className="text-center text-gray-500">
@@ -66,7 +66,7 @@ export default function MainFeed() {
         articles.map((article) => (
           <div
             key={article._id}
-            className="p-4 border-b space-y-2 flex flex-col"
+            className="p-4 border-b space-y-2 flex flex-col overflow-y-auto"
           >
             <div className="flex items-center space-x-2">
               {article.authorDetails?.imageUri ? (
@@ -112,7 +112,7 @@ export default function MainFeed() {
 
               <div className="flex items-center space-x-4">
                 <BookmarkPopover
-                  storyId={article._id} // Pass the storyId as a prop
+                  storyId={article._id}
                   collections={collections.map((c) => c.collectionName)}
                   onAddToCollection={(collectionName) =>
                     handleAddToCollection(collectionName, article._id)

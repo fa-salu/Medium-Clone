@@ -1,7 +1,7 @@
 import { Notifications } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import PublishButton from "@/components/new-post/publishButton"; // Import the new PublishButton component
+import PublishButton from "@/components/ui/publishButton";
 import Link from "next/link";
 
 interface BarProps {

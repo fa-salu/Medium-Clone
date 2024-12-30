@@ -24,6 +24,18 @@ export default function NewStory() {
   const storyRef = useRef<HTMLDivElement>(null);
   const [showIcons, setShowIcons] = useState(false);
 
+  const debouncedSetTitle = useRef(
+    debounce((newTitle: string) => {
+      dispatch(setTitle(newTitle));
+    }, 2000)
+  ).current;
+
+  const debouncedSetContent = useRef(
+    debounce((newContent: string) => {
+      dispatch(setContent(newContent));
+    }, 2000)
+  ).current;
+
   useEffect(() => {
     dispatch(loadStoryIdFromCookies());
   }, [dispatch]);
@@ -45,6 +57,7 @@ export default function NewStory() {
             id,
             articles: [],
             error: null,
+            savedCollections: [],
           })
         );
       }
@@ -61,7 +74,7 @@ export default function NewStory() {
         disableReturn: true,
       });
       titleRef.current.addEventListener("input", (e) => {
-        dispatch(setTitle((e.target as HTMLDivElement).innerHTML));
+        debouncedSetTitle((e.target as HTMLDivElement).innerHTML);
       });
     }
 
@@ -73,10 +86,10 @@ export default function NewStory() {
         },
       });
       storyRef.current.addEventListener("input", (e) => {
-        dispatch(setContent((e.target as HTMLDivElement).innerHTML));
+        debouncedSetContent((e.target as HTMLDivElement).innerHTML);
       });
     }
-  }, [dispatch]);
+  }, [debouncedSetTitle, debouncedSetContent]);
 
   useEffect(() => {
     if (titleRef.current && titleRef.current.innerHTML !== title) {

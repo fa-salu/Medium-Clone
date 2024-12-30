@@ -1,25 +1,22 @@
 "use client";
 
 import { Add, ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchAllStories } from "@/lib/features/storySlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { fetchTopics } from "@/lib/features/topicSlice";
 
-const topics = [
-  "For You",
-  "Following",
-  "Relationships",
-  "Machine Learning",
-  "Psychology",
-  "Science",
-  "Software Engineering",
-  "Marketing",
-  "UX",
-];
-
-export default function CategoryBar() {
+export default function TopicBar() {
   const [selectedCategory, setSelectedCategory] = useState("For You");
   const dispatch = useAppDispatch();
+  const { topics, loading, error } = useAppSelector((state) => state.topic);
+
+  const fixedTopics = ["For You", "Following"];
+  const displayedTopics = fixedTopics.concat(topics || []);
+
+  useEffect(() => {
+    dispatch(fetchTopics());
+  }, [dispatch]);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -48,18 +45,22 @@ export default function CategoryBar() {
       <Add className="text-gray-800" />
 
       <div id="category-container" className="flex space-x-4 overflow-x-auto">
-        {topics.map((category) => (
-          <button
-            type="button"
-            key={category}
-            onClick={() => handleCategoryClick(category)}
-            className={`whitespace-nowrap px-4 py-2 text-gray-800 border-b-2 border-transparent hover:border-black ${
-              category === selectedCategory ? "border-black" : ""
-            }`}
-          >
-            {category}
-          </button>
-        ))}
+        {displayedTopics && displayedTopics.length > 0 ? (
+          displayedTopics.map((category) => (
+            <button
+              type="button"
+              key={category}
+              onClick={() => handleCategoryClick(category)}
+              className={`whitespace-nowrap px-4 py-2 text-gray-800 border-b-2 border-transparent hover:border-black ${
+                category === selectedCategory ? "border-black" : ""
+              }`}
+            >
+              {category}
+            </button>
+          ))
+        ) : (
+          <div>No topics available</div>
+        )}
       </div>
 
       <ChevronRight

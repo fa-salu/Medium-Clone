@@ -7,7 +7,6 @@ import { SavedCollectionModel } from "../models/savedModel";
 import mongoose from "mongoose";
 
 export const savedStory = async (req: CustomRequest, res: Response) => {
-  console.log(req.body);
   const { storyId, collectionName } = req.body;
   const userId = req.user?.id;
 
@@ -87,15 +86,15 @@ export const getSavedStoriesByUser = async (
       $match: { userId: new mongoose.Types.ObjectId(userId) },
     },
     {
+      $unwind: "$collections",
+    },
+    {
       $lookup: {
         from: "stories",
         localField: "collections.storyIds",
         foreignField: "_id",
         as: "storyDetails",
       },
-    },
-    {
-      $unwind: "$collections",
     },
     {
       $lookup: {
@@ -109,21 +108,19 @@ export const getSavedStoriesByUser = async (
       $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true },
     },
     {
+      $group: {
+        _id: "$collections.collectionName",
+        userId: { $first: "$userId" },
+        userDetails: { $first: "$userDetails" },
+        stories: { $push: "$storyDetails" },
+      },
+    },
+    {
       $project: {
+        collectionName: "$_id",
         userId: 1,
-        collectionName: "$collections.collectionName",
-        storyDetails: {
-          _id: 1,
-          title: 1,
-          content: 1,
-        },
-        userDetails: {
-          name: 1,
-          email: 1,
-          imageUri: 1,
-          likedPosts: 1,
-          clappedPosts: 1,
-        },
+        userDetails: 1,
+        stories: 1,
       },
     },
   ]);

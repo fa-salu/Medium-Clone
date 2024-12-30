@@ -27,7 +27,8 @@ interface Article {
 
 interface SavedCollection {
   collectionName: string;
-  storyDetails: Article[];
+  stories: Article[];
+  userDetails?: AuthorDetails[];
 }
 
 interface StoryState {
@@ -133,7 +134,6 @@ export const saveStoryToCollection = createAsyncThunk(
     { storyId, collectionName }: { storyId: string; collectionName: string },
     { rejectWithValue }
   ) => {
-    console.log("from slice:", storyId, collectionName);
     try {
       const response = await axiosInstance.post("/api/save-story", {
         storyId,
@@ -165,7 +165,6 @@ export const fetchStoryByAuthor = createAsyncThunk(
       const response = await axiosInstance.get(
         `/api/stories/author/${authorId}`
       );
-      console.log("data", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue("Failed to fetch story by author");
@@ -259,20 +258,20 @@ const storySlice = createSlice({
         );
 
         if (collection) {
-          const storyExists = collection.storyDetails.some(
+          const storyExists = collection.stories.some(
             (story) => story?._id === storyId
           );
           if (storyExists) {
-            collection.storyDetails = collection.storyDetails.filter(
-              (story) => story._id !== storyId
+            collection.stories = collection.stories.filter(
+              (story) => story?._id !== storyId
             );
           } else {
-            collection.storyDetails.push(action.payload.storyDetails);
+            collection.stories.push(action.payload.stories);
           }
         } else {
           state.savedCollections.push({
             collectionName,
-            storyDetails: [action.payload.storyDetails],
+            stories: [action.payload.stories],
           });
         }
       })
