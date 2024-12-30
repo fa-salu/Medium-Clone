@@ -7,6 +7,7 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import AvatarComponent from "@/components/Navbar/avatar";
+import Link from "next/link";
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -52,6 +53,11 @@ export default function Navbar() {
     router.push("/new-story");
   };
 
+  const handleProfileClick = () => {
+    router.push("/profile");
+    setAnchorEl(null);
+  };
+
   return (
     <motion.nav
       initial={{ y: 0 }}
@@ -61,7 +67,9 @@ export default function Navbar() {
       transition={{ type: "tween", duration: 0.3 }}
       className="fixed top-0 left-0 right-0 bg-white z-50 flex justify-between items-center px-4 py-2 border-b shadow-sm"
     >
-      <div className="text-2xl font-bold">Medium</div>
+      <Link href="/u-home">
+        <div className="text-2xl font-bold">Medium</div>
+      </Link>
 
       <input
         type="text"
@@ -89,7 +97,7 @@ export default function Navbar() {
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
           <MenuItem onClick={handleClose}>Settings</MenuItem>
           <MenuItem onClick={handleLogOut}>Sign Out</MenuItem>
         </Menu>

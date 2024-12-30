@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  ThumbUpAltOutlined,
-  ChatBubbleOutline,
-  MoreHoriz,
-} from "@mui/icons-material";
-import CategoryBar from "./categoryBar";
+import { ThumbUpAltOutlined, ChatBubbleOutline } from "@mui/icons-material";
+import CategoryBar from "./topicsBar";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {

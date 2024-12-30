@@ -117,36 +117,53 @@ export const getAllStories = async (req: CustomRequest, res: Response) => {
     .json(new StandardResponse("Stories fetched successfully", stories));
 };
 
-// Update a story
-export const updateStory = async (req: CustomRequest, res: Response) => {
-  const { storyId } = req.params;
-  const { title, content, category } = req.body;
+// Get all stories by author
+export const getStoriesByAuthor = async (req: CustomRequest, res: Response) => {
   const userId = req.user?.id;
 
-  if (!storyId) {
-    throw new CustomError("Story ID is required.", 400);
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required." });
   }
 
-  const story = await Story.findById(storyId);
+  const stories = await Story.find({ author: userId });
 
-  if (!story) {
-    throw new CustomError("Story not found.", 404);
+  if (stories.length === 0) {
+    return res.status(404).json({ message: "No stories found for this user." });
   }
 
-  if (story.author.toString() !== userId) {
-    throw new CustomError("Unauthorized to update this story.", 403);
-  }
-
-  story.title = title || story.title;
-  story.content = content || story.content;
-  story.category = category || story.category;
-
-  await story.save();
-
-  res
-    .status(200)
-    .json(new StandardResponse("Story updated successfully", story));
+  res.status(200).json({ message: "Stories fetched successfully", stories });
 };
+
+// Update a story
+// export const updateStory = async (req: CustomRequest, res: Response) => {
+//   const { storyId } = req.params;
+//   const { title, content, category } = req.body;
+//   const userId = req.user?.id;
+
+//   if (!storyId) {
+//     throw new CustomError("Story ID is required.", 400);
+//   }
+
+//   const story = await Story.findById(storyId);
+
+//   if (!story) {
+//     throw new CustomError("Story not found.", 404);
+//   }
+
+//   if (story.author.toString() !== userId) {
+//     throw new CustomError("Unauthorized to update this story.", 403);
+//   }
+
+//   story.title = title || story.title;
+//   story.content = content || story.content;
+//   story.category = category || story.category;
+
+//   await story.save();
+
+//   res
+//     .status(200)
+//     .json(new StandardResponse("Story updated successfully", story));
+// };
 
 // Delete a story
 export const deleteStory = async (req: CustomRequest, res: Response) => {

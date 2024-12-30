@@ -2,6 +2,7 @@ import { Notifications } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import PublishButton from "@/components/new-post/publishButton"; // Import the new PublishButton component
+import Link from "next/link";
 
 interface BarProps {
   setShowIcons: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,7 +16,9 @@ export default function Bar({ setShowIcons }: BarProps) {
   return (
     <div className="flex sticky top-0 justify-between items-center px-52 py-4 bg-white rounded-lg z-50">
       <div className="flex items-end">
-        <h1 className="text-3xl font-semibold">Medium</h1>
+        <Link href="/u-home">
+          <h1 className="text-3xl font-semibold">Medium</h1>
+        </Link>
         <p className="text-sm ml-3 text-gray-500">Draft in Fasalu</p>
       </div>
       <div className="flex items-center space-x-6">

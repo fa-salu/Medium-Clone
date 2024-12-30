@@ -5,7 +5,7 @@ import { useState } from "react";
 import { fetchAllStories } from "@/lib/features/storySlice";
 import { useAppDispatch } from "@/lib/hooks";
 
-const categories = [
+const topics = [
   "For You",
   "Following",
   "Relationships",
@@ -48,7 +48,7 @@ export default function CategoryBar() {
       <Add className="text-gray-800" />
 
       <div id="category-container" className="flex space-x-4 overflow-x-auto">
-        {categories.map((category) => (
+        {topics.map((category) => (
           <button
             type="button"
             key={category}

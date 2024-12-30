@@ -17,6 +17,7 @@ export const getUser = async (req: CustomRequest, res: Response) => {
   if (!user) {
     throw new CustomError("Story not found", 404);
   }
+  console.log(user);
 
   res
     .status(200)

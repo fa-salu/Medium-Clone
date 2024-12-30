@@ -158,6 +158,33 @@ export const fetchSavedCollections = createAsyncThunk(
   }
 );
 
+export const fetchStoryByAuthor = createAsyncThunk(
+  "story/fetchStoryByAuthor",
+  async ({ authorId }: { authorId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/stories/author/${authorId}`
+      );
+      console.log("data", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch story by author");
+    }
+  }
+);
+
+export const deleteStory = createAsyncThunk(
+  "story/deleteStory",
+  async ({ storyId }: { storyId: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(`/api/stories/${storyId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue("Failed to delete story");
+    }
+  }
+);
+
 const storySlice = createSlice({
   name: "story",
   initialState,
@@ -183,6 +210,13 @@ const storySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchStoryByAuthor.fulfilled, (state, action) => {
+        state.articles = action.payload.stories;
+      })
+      .addCase(fetchStoryByAuthor.pending, (state) => {
+        state.isSaving = true;
+      })
+
       .addCase(fetchStory.fulfilled, (state, action) => {
         const { title, content } = action.payload;
         state.title = title;
@@ -252,6 +286,14 @@ const storySlice = createSlice({
       .addCase(fetchSavedCollections.rejected, (state, action) => {
         state.error = action.payload as string;
         state.savedCollections = [];
+      })
+      .addCase(deleteStory.fulfilled, (state, action) => {
+        state.articles = state.articles.filter(
+          (article) => article._id !== action.payload?.storyId
+        );
+      })
+      .addCase(deleteStory.rejected, (state, action) => {
+        state.error = action.payload as string;
       });
   },
 });

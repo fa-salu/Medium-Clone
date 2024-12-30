@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 
 interface UserState {
   user: {
+    _id: string | null;
     name: string;
     email: string;
     imageUri: string;
