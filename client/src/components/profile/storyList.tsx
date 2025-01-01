@@ -13,6 +13,7 @@ import BookmarkPopover from "../ui/savedStoryPopover";
 import { useAppDispatch } from "@/lib/hooks";
 import MoreOptionsPopover from "../ui/moreOptionProfile";
 import Image from "next/image";
+import Link from "next/link";
 
 interface StoryListProps {
   selectedTab: string;
@@ -24,6 +25,8 @@ export default function StoryList({ selectedTab }: StoryListProps) {
   const collections = useSelector(
     (state: RootState) => state.story.savedCollections
   );
+
+  console.log("object:", collections);
 
   const author = useSelector((state: RootState) => state.user.user);
   const authorId = author?._id;
@@ -62,8 +65,6 @@ export default function StoryList({ selectedTab }: StoryListProps) {
     }
   }, [authorId, dispatch]);
 
-  const storiesCount = collections.length;
-
   const noArticles = !articles || articles.length === 0;
   const noCollections = !collections || collections.length === 0;
 
@@ -81,16 +82,18 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                 key={article._id}
                 className="p-4 border-b space-y-2 flex flex-col"
               >
-                <div className="flex justify-between">
-                  <h2 className="text-lg font-semibold flex-grow pr-4">
-                    {article.title}
-                  </h2>
-                  <img
-                    src={article.imageUri}
-                    alt={article.title || "Article Image"}
-                    className="w-24 h-24 object-cover rounded-lg"
-                  />
-                </div>
+                <Link href={`${article._id}`}>
+                  <div className="flex justify-between">
+                    <h2 className="text-lg font-semibold flex-grow pr-4">
+                      {article.title}
+                    </h2>
+                    <img
+                      src={article.imageUri}
+                      alt={article.title || "Article Image"}
+                      className="w-24 h-24 object-cover rounded-lg"
+                    />
+                  </div>
+                </Link>
                 <div className="flex justify-between items-center text-sm text-gray-600">
                   <div className="flex items-center space-x-4">
                     <span>

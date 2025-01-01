@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import type { RootState } from "../store";
 
 interface AuthorDetails {
+  _id: string;
   email: string;
   imageUri: string;
   name: string;
@@ -37,6 +38,8 @@ interface StoryState {
   category: string;
   id: string | null;
   isSaving: boolean;
+  isLoading: boolean;
+  article: Article | null;
   articles: Article[];
   savedCollections: SavedCollection[];
   error: string | null;
@@ -48,6 +51,8 @@ const initialState: StoryState = {
   category: "",
   id: null,
   isSaving: false,
+  isLoading: false,
+  article: null,
   articles: [],
   savedCollections: [],
   error: null,
@@ -58,6 +63,7 @@ export const fetchStory = createAsyncThunk(
   async (storyId: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/api/stories/${storyId}`);
+      console.log("fetchSotry:", response.data.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue("Failed to fetch story");
@@ -117,10 +123,12 @@ export const saveOrUpdateStory = createAsyncThunk(
 export const addClaps = createAsyncThunk(
   "story/addClaps",
   async ({ storyId }: { storyId: string }, { rejectWithValue }) => {
+    console.log("clap");
     try {
       const response = await axiosInstance.post(
         `/api/stories/${storyId}/claps`
       );
+      console.log("clap res:", response.data.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue("Failed to update claps");
@@ -216,10 +224,17 @@ const storySlice = createSlice({
         state.isSaving = true;
       })
 
+      .addCase(fetchStory.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(fetchStory.fulfilled, (state, action) => {
-        const { title, content } = action.payload;
-        state.title = title;
-        state.content = content;
+        state.isLoading = false;
+        state.article = action.payload;
+      })
+      .addCase(fetchStory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       })
       .addCase(fetchAllStories.fulfilled, (state, action) => {
         state.articles = action.payload || [];
@@ -241,6 +256,9 @@ const storySlice = createSlice({
       })
       .addCase(addClaps.fulfilled, (state, action) => {
         const updatedStory = action.payload;
+        if (state.article && state.article._id === updatedStory._id) {
+          state.article.claps = updatedStory.claps;
+        }
         const index = state.articles.findIndex(
           (story) => story._id === updatedStory._id
         );

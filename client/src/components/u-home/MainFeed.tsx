@@ -15,6 +15,7 @@ import { useAppDispatch } from "@/lib/hooks";
 import Image from "next/image";
 import BookmarkPopover from "../ui/savedStoryPopover";
 import FollowPopover from "../ui/followPopover";
+import Link from "next/link";
 
 export default function MainFeed() {
   const dispatch = useAppDispatch();
@@ -82,16 +83,18 @@ export default function MainFeed() {
               )}
               <p>{article.authorDetails?.name}</p>
             </div>
-            <div className="flex justify-between">
-              <h2 className="text-lg font-semibold flex-grow pr-4">
-                {article.title}
-              </h2>
-              <img
-                src={article.imageUri}
-                alt={article.title || "Article Image"}
-                className="w-24 h-24 object-cover rounded-lg"
-              />
-            </div>
+            <Link href={`/${article._id}`}>
+              <div className="flex justify-between">
+                <h2 className="text-lg font-semibold flex-grow pr-4">
+                  {article.title}
+                </h2>
+                <img
+                  src={article.imageUri}
+                  alt={article.title || "Article Image"}
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+              </div>
+            </Link>
 
             <div className="flex justify-between items-center text-sm text-gray-600">
               <div className="flex items-center space-x-4">

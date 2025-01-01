@@ -50,22 +50,33 @@ export const updateStorys = async (req: CustomRequest, res: Response) => {
 };
 
 // Fetch Story
-export const fetchStory = async (req: CustomRequest, res: Response) => {
+export const fetchStoryById = async (req: CustomRequest, res: Response) => {
   const storyId = req.params.id;
 
   if (!storyId) {
     throw new CustomError("Story ID is required", 400);
   }
 
-  const story = await Story.findById(storyId);
+  const story = await Story.aggregate([
+    { $match: { _id: new mongoose.Types.ObjectId(storyId) } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "author",
+        foreignField: "_id",
+        as: "authorDetails",
+      },
+    },
+    { $unwind: "$authorDetails" },
+  ]);
 
-  if (!story) {
+  if (!story.length) {
     throw new CustomError("Story not found", 404);
   }
 
   res
     .status(200)
-    .json(new StandardResponse("Story fetched successfully", story));
+    .json(new StandardResponse("Story fetched successfully", story[0]));
 };
 
 // Get all stories

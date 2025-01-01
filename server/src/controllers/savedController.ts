@@ -142,3 +142,97 @@ export const getSavedStoriesByUser = async (
       )
     );
 };
+
+// Get saved stories by collection name
+export const getSavedCollectionByName = async (
+  req: CustomRequest,
+  res: Response
+) => {
+  const userId = req.user?.id;
+  const { collectionName } = req.params; // Get collectionName from request parameters
+
+  console.log("User ID:", userId);
+  console.log("Requested Collection Name:", collectionName);
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json(new StandardResponse("User ID is required.", null));
+  }
+
+  if (!collectionName) {
+    return res
+      .status(400)
+      .json(new StandardResponse("Collection name is required.", null));
+  }
+
+  const userSavedCollection = await SavedCollectionModel.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(userId), // Match the userId
+      },
+    },
+    {
+      $unwind: "$collections", // Unwind the collections array to get individual collection documents
+    },
+    {
+      $match: {
+        "collections.collectionName": collectionName, // Match the specific collection name
+      },
+    },
+    {
+      $lookup: {
+        from: "stories", // Join with stories collection
+        localField: "collections.storyIds",
+        foreignField: "_id",
+        as: "storyDetails",
+      },
+    },
+    {
+      $lookup: {
+        from: "users", // Join with users collection
+        localField: "userId",
+        foreignField: "_id",
+        as: "userDetails",
+      },
+    },
+    {
+      $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true },
+    },
+    {
+      $group: {
+        _id: "$collections.collectionName",
+        userId: { $first: "$userId" },
+        userDetails: { $first: "$userDetails" },
+        stories: { $push: "$storyDetails" },
+      },
+    },
+    {
+      $project: {
+        collectionName: "$_id",
+        userId: 1,
+        userDetails: 1,
+        stories: 1,
+      },
+    },
+  ]);
+
+  console.log("Aggregation Result:", userSavedCollection);
+
+  if (!userSavedCollection || userSavedCollection.length === 0) {
+    return res
+      .status(404)
+      .json(
+        new StandardResponse("Collection not found or no stories in it.", null)
+      );
+  }
+
+  return res
+    .status(200)
+    .json(
+      new StandardResponse(
+        `Saved collection "${collectionName}" fetched successfully.`,
+        userSavedCollection
+      )
+    );
+};

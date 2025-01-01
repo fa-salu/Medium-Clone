@@ -58,6 +58,8 @@ export default function NewStory() {
             articles: [],
             error: null,
             savedCollections: [],
+            isLoading: false,
+            article: null,
           })
         );
       }

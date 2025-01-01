@@ -6,7 +6,7 @@ import {
   deleteStory,
   updateClaps,
   updateStorys,
-  fetchStory,
+  fetchStoryById,
   getStoriesByAuthor,
 } from "../controllers/storyController";
 import { verifyToken } from "../middlewares/verifyToken";
@@ -17,7 +17,7 @@ const router = express.Router();
 // Routes for Stories
 router.post("/stories", verifyToken, errorCatch(createStory));
 router.put("/stories/:id", verifyToken, errorCatch(updateStorys));
-router.get("/stories/:id", verifyToken, errorCatch(fetchStory));
+router.get("/stories/:id", verifyToken, errorCatch(fetchStoryById));
 router.get("/stories", errorCatch(getAllStories));
 // router.put("/stories/:storyId", verifyToken, errorCatch(updateStory));
 router.delete("/stories/:storyId", verifyToken, errorCatch(deleteStory));
