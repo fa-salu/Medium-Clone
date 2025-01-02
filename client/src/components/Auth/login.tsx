@@ -28,6 +28,7 @@ export default function LoginDialog({
   const dispatch = useAppDispatch();
 
   const { data: session } = useSession();
+  console.log("object", session);
 
   React.useEffect(() => {
     if (session) {

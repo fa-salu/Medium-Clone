@@ -6,7 +6,7 @@ import type { RootState } from "@/lib/store";
 import { useEffect } from "react";
 import { fetchUserDetails } from "@/lib/features/authSlice";
 
-export default function UserDetails() {
+export default function AuthorDetails() {
   const dispatch = useAppDispatch();
   const { user, status, error } = useSelector((state: RootState) => state.user);
 

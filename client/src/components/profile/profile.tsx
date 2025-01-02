@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ProfileBar from "./profileBar";
-import UserDetails from "./authorDetails";
+import AuthorDetails from "./authorDetails";
 import StoryList from "./storyList";
 
 export default function Profile() {
@@ -16,7 +16,7 @@ export default function Profile() {
       </div>
 
       <div className="w-1/3">
-        <UserDetails />
+        <AuthorDetails />
       </div>
     </div>
   );

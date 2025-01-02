@@ -26,8 +26,6 @@ export default function StoryList({ selectedTab }: StoryListProps) {
     (state: RootState) => state.story.savedCollections
   );
 
-  console.log("object:", collections);
-
   const author = useSelector((state: RootState) => state.user.user);
   const authorId = author?._id;
 
@@ -159,13 +157,18 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                   )}
                   <p>{author?.name}</p>
                 </div>
-                <h2 className="text-lg font-semibold">
-                  {collection.collectionName}
-                </h2>
-                <p className="text-sm text-gray-600">
-                  {collection.stories.flat().length}{" "}
-                  {collection.stories.flat().length === 1 ? "story" : "stories"}
-                </p>
+                <Link href={`/list/${collection.collectionName}`}>
+                  {" "}
+                  <h2 className="text-lg font-semibold">
+                    {collection.collectionName}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {collection.stories.flat().length}{" "}
+                    {collection.stories.flat().length === 1
+                      ? "story"
+                      : "stories"}
+                  </p>
+                </Link>
               </div>
             ))
           )}

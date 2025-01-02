@@ -149,10 +149,10 @@ export const getSavedCollectionByName = async (
   res: Response
 ) => {
   const userId = req.user?.id;
-  const { collectionName } = req.params; // Get collectionName from request parameters
+  const { listName } = req.params;
 
   console.log("User ID:", userId);
-  console.log("Requested Collection Name:", collectionName);
+  console.log("Requested Collection Name:", listName);
 
   if (!userId) {
     return res
@@ -160,7 +160,7 @@ export const getSavedCollectionByName = async (
       .json(new StandardResponse("User ID is required.", null));
   }
 
-  if (!collectionName) {
+  if (!listName) {
     return res
       .status(400)
       .json(new StandardResponse("Collection name is required.", null));
@@ -169,49 +169,52 @@ export const getSavedCollectionByName = async (
   const userSavedCollection = await SavedCollectionModel.aggregate([
     {
       $match: {
-        userId: new mongoose.Types.ObjectId(userId), // Match the userId
+        userId: new mongoose.Types.ObjectId(userId),
       },
     },
     {
-      $unwind: "$collections", // Unwind the collections array to get individual collection documents
+      $unwind: "$collections",
     },
     {
       $match: {
-        "collections.collectionName": collectionName, // Match the specific collection name
+        "collections.collectionName": listName,
       },
     },
     {
       $lookup: {
-        from: "stories", // Join with stories collection
+        from: "stories",
         localField: "collections.storyIds",
         foreignField: "_id",
-        as: "storyDetails",
+        as: "stories",
       },
+    },
+    {
+      $unwind: "$stories",
     },
     {
       $lookup: {
-        from: "users", // Join with users collection
-        localField: "userId",
+        from: "users",
+        localField: "stories.author",
         foreignField: "_id",
-        as: "userDetails",
+        as: "stories.authorDetails",
       },
     },
     {
-      $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true },
+      $unwind: {
+        path: "$stories.authorDetails",
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $group: {
         _id: "$collections.collectionName",
-        userId: { $first: "$userId" },
-        userDetails: { $first: "$userDetails" },
-        stories: { $push: "$storyDetails" },
+        stories: { $push: "$stories" },
       },
     },
     {
       $project: {
+        _id: 0,
         collectionName: "$_id",
-        userId: 1,
-        userDetails: 1,
         stories: 1,
       },
     },
@@ -231,8 +234,8 @@ export const getSavedCollectionByName = async (
     .status(200)
     .json(
       new StandardResponse(
-        `Saved collection "${collectionName}" fetched successfully.`,
-        userSavedCollection
+        `Saved collection "${listName}" fetched successfully.`,
+        userSavedCollection[0]
       )
     );
 };

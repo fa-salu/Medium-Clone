@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/save-story", verifyToken, errorCatch(savedStory));
 router.get("/save-collection", verifyToken, errorCatch(getSavedStoriesByUser));
 router.get(
-  "/saved-collections/:collectionName",
+  "/saved-collections/:listName",
   verifyToken,
   errorCatch(getSavedCollectionByName)
 );

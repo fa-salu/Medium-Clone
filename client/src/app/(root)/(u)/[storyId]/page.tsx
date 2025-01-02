@@ -28,15 +28,15 @@ export default function Page() {
 
   const FollowBtnShow = author === article?.authorDetails._id;
 
-  const handleClap = (storyId: string) => {
-    dispatch(addClaps({ storyId }));
-    dispatch(fetchStory(storyId));
-  };
-
   useEffect(() => {
     dispatch(fetchStory(storyId));
     dispatch(fetchSavedCollections());
   }, [dispatch, storyId]);
+
+  const handleClap = (storyId: string) => {
+    dispatch(addClaps({ storyId }));
+    dispatch(fetchStory(storyId));
+  };
 
   const handleAddToCollection = (collectionName: string, storyId: string) => {
     dispatch(saveStoryToCollection({ storyId, collectionName }));
@@ -113,16 +113,23 @@ export default function Page() {
                   </span>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <BookmarkPopover
-                    storyId={article._id}
-                    collections={collections.map((c) => c.collectionName)}
-                    onAddToCollection={(collectionName) =>
-                      handleAddToCollection(collectionName, article._id)
-                    }
-                    onCreateNewCollection={(newCollectionName) =>
-                      handleCreateNewCollection(newCollectionName, article._id)
-                    }
-                  />
+                  {collections && collections.length > 0 ? (
+                    <BookmarkPopover
+                      storyId={article._id}
+                      collections={collections.map((c) => c.collectionName)}
+                      onAddToCollection={(collectionName) =>
+                        handleAddToCollection(collectionName, article._id)
+                      }
+                      onCreateNewCollection={(newCollectionName) =>
+                        handleCreateNewCollection(
+                          newCollectionName,
+                          article._id
+                        )
+                      }
+                    />
+                  ) : (
+                    <p>No collections available</p>
+                  )}
                 </div>
               </div>
             </div>

@@ -27,6 +27,7 @@ interface Article {
 }
 
 interface SavedCollection {
+  _id: string;
   collectionName: string;
   stories: Article[];
   userDetails?: AuthorDetails[];
@@ -64,6 +65,21 @@ export const fetchStory = createAsyncThunk(
     try {
       const response = await axiosInstance.get(`/api/stories/${storyId}`);
       console.log("fetchSotry:", response.data.data);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch story");
+    }
+  }
+);
+
+export const fetchStoryByListName = createAsyncThunk(
+  "story/fetchStoryByListName",
+  async (listName: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(
+        `/api/saved-collections/${listName}`
+      );
+      console.log("fetchStoryByListName:", response.data.data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue("Failed to fetch story");
@@ -217,13 +233,17 @@ const storySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchStoryByAuthor.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(fetchStoryByAuthor.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.articles = action.payload.stories;
       })
-      .addCase(fetchStoryByAuthor.pending, (state) => {
-        state.isSaving = true;
+      .addCase(fetchStoryByAuthor.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       })
-
       .addCase(fetchStory.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -235,6 +255,22 @@ const storySlice = createSlice({
       .addCase(fetchStory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(fetchStoryByListName.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchStoryByListName.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.savedCollections = action.payload;
+      })
+      .addCase(fetchStoryByListName.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchAllStories.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
       })
       .addCase(fetchAllStories.fulfilled, (state, action) => {
         state.articles = action.payload || [];
@@ -254,6 +290,9 @@ const storySlice = createSlice({
       .addCase(saveOrUpdateStory.rejected, (state) => {
         state.isSaving = false;
       })
+      .addCase(addClaps.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(addClaps.fulfilled, (state, action) => {
         const updatedStory = action.payload;
         if (state.article && state.article._id === updatedStory._id) {
@@ -267,7 +306,11 @@ const storySlice = createSlice({
         }
       })
       .addCase(addClaps.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(saveStoryToCollection.pending, (state) => {
+        state.isLoading = true;
       })
       .addCase(saveStoryToCollection.fulfilled, (state, action) => {
         const { storyId, collectionName } = action.payload;
@@ -290,10 +333,12 @@ const storySlice = createSlice({
           state.savedCollections.push({
             collectionName,
             stories: [action.payload.stories],
+            _id: "",
           });
         }
       })
       .addCase(saveStoryToCollection.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload as string;
       })
       .addCase(fetchSavedCollections.fulfilled, (state, action) => {
