@@ -58,6 +58,8 @@ export default function PublishButton() {
         articles: [],
         error: null,
         savedCollections: [],
+        isLoading: false,
+        article: null,
       })
     ).then(() => {
       Cookies.remove("storyId");

@@ -251,6 +251,8 @@ const storySlice = createSlice({
       .addCase(fetchStory.fulfilled, (state, action) => {
         state.isLoading = false;
         state.article = action.payload;
+        state.title = action.payload.title;
+        state.content = action.payload.content;
       })
       .addCase(fetchStory.rejected, (state, action) => {
         state.isLoading = false;
