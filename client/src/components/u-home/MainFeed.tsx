@@ -114,16 +114,20 @@ export default function MainFeed() {
               </div>
 
               <div className="flex items-center space-x-4">
-                <BookmarkPopover
-                  storyId={article._id}
-                  collections={collections.map((c) => c.collectionName)}
-                  onAddToCollection={(collectionName) =>
-                    handleAddToCollection(collectionName, article._id)
-                  }
-                  onCreateNewCollection={(newCollectionName) =>
-                    handleCreateNewCollection(newCollectionName, article._id)
-                  }
-                />
+                {collections && collections.length > 0 ? (
+                  <BookmarkPopover
+                    storyId={article._id}
+                    collections={collections.map((c) => c.collectionName)}
+                    onAddToCollection={(collectionName) =>
+                      handleAddToCollection(collectionName, article._id)
+                    }
+                    onCreateNewCollection={(newCollectionName) =>
+                      handleCreateNewCollection(newCollectionName, article._id)
+                    }
+                  />
+                ) : (
+                  <p>No collections available</p>
+                )}
 
                 <FollowPopover
                   authorName={article.authorDetails?.name || "Unknown"}

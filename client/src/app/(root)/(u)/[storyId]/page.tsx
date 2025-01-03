@@ -26,7 +26,7 @@ export default function Page() {
   );
   const author = useAppSelector((state: RootState) => state.user.user?._id);
 
-  const FollowBtnShow = author === article?.authorDetails._id;
+  const FollowBtnShow = author === article?.authorDetails?._id;
 
   useEffect(() => {
     dispatch(fetchStory(storyId));

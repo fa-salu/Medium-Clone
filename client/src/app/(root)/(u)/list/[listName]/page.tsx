@@ -1,7 +1,12 @@
 "use client";
 
 import AuthorDetails from "@/components/profile/authorDetails";
-import { addClaps, fetchStoryByListName } from "@/lib/features/storySlice";
+import PopoverMenu from "@/components/ui/RemovePopover";
+import {
+  addClaps,
+  fetchStoryByListName,
+  saveStoryToCollection,
+} from "@/lib/features/storySlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import type { RootState } from "@/lib/store";
 import {
@@ -12,15 +17,40 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
+
+interface AuthorDetailss {
+  imageUri?: string;
+  name?: string;
+}
+
+interface Story {
+  _id: string;
+  title: string;
+  claps: number;
+  createdAt: string;
+  authorDetails?: AuthorDetailss;
+}
+
+interface SavedCollection {
+  collectionName: string;
+  stories: Story[];
+}
 
 export default function Page() {
   const params = useParams();
   const listName = params.listName as string;
   const dispatch = useAppDispatch();
+
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [selectedStory, setSelectedStory] = useState<{
+    storyId: string;
+    collectionName: string;
+  } | null>(null);
+
   const collections = useAppSelector(
     (state: RootState) => state.story.savedCollections
-  );
+  ) as unknown as SavedCollection | null;
 
   console.log("collection:", collections);
 
@@ -29,17 +59,40 @@ export default function Page() {
   }, [dispatch, listName]);
 
   const handleClap = (storyId: string) => {
-    dispatch(addClaps({ storyId }));
+    dispatch(addClaps({ storyId })).then(() => {
+      dispatch(fetchStoryByListName(listName));
+    });
+  };
+
+  const handleMoreClick = (
+    event: MouseEvent<SVGSVGElement>,
+    storyId: string,
+    collectionName: string
+  ) => {
+    setAnchorEl(event.currentTarget as unknown as HTMLElement);
+    setSelectedStory({ storyId, collectionName });
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+    setSelectedStory(null);
+  };
+
+  const handleRemove = (storyId: string, collectionName: string) => {
+    dispatch(saveStoryToCollection({ storyId, collectionName })).then(() => {
+      dispatch(fetchStoryByListName(listName));
+    });
+    handleClosePopover();
   };
 
   return (
     <div className="flex space-x-6 p-12">
       <div className="w-2/3 ml-20">
         {collections ? (
-          <div key={collections?.collectionName} className="space-y-4">
-            <h2 className="text-xl font-bold">
-              Collection: {collections.collectionName}
-            </h2>
+          <div key={collections.collectionName} className="space-y-4">
+            <h1 className="text-2xl border-b py-4 capitalize">
+              {collections.collectionName}
+            </h1>
 
             {collections.stories?.length > 0 ? (
               collections.stories.map((story) => (
@@ -87,7 +140,15 @@ export default function Page() {
                       </span>
                     </div>
                     <div className="flex items-center space-x-4">
-                      <MoreHoriz />
+                      <MoreHoriz
+                        onClick={(e: MouseEvent<SVGSVGElement>) =>
+                          handleMoreClick(
+                            e,
+                            story._id,
+                            collections.collectionName
+                          )
+                        }
+                      />
                     </div>
                   </div>
                 </div>
@@ -104,6 +165,16 @@ export default function Page() {
       <div className="w-1/3">
         <AuthorDetails />
       </div>
+      {selectedStory && (
+        <PopoverMenu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClosePopover}
+          onRemove={handleRemove}
+          storyId={selectedStory.storyId}
+          collectionName={selectedStory.collectionName}
+        />
+      )}
     </div>
   );
 }

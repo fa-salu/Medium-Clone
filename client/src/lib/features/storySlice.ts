@@ -6,6 +6,7 @@ import {
 import axiosInstance from "@/utils/axios";
 import Cookies from "js-cookie";
 import type { RootState } from "../store";
+import { axiosErrorCatch } from "@/utils/axios-ErrorCatch";
 
 interface AuthorDetails {
   _id: string;
@@ -22,7 +23,7 @@ interface Article {
   createdAt: string;
   claps: number;
   likes: number;
-  authorDetails: AuthorDetails;
+  authorDetails?: AuthorDetails;
   imageUri: string;
 }
 
@@ -67,7 +68,8 @@ export const fetchStory = createAsyncThunk(
       console.log("fetchSotry:", response.data.data);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue("Failed to fetch story");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -82,7 +84,8 @@ export const fetchStoryByListName = createAsyncThunk(
       console.log("fetchStoryByListName:", response.data.data);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue("Failed to fetch story");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -99,7 +102,8 @@ export const fetchAllStories = createAsyncThunk(
       }
       return response.data.data;
     } catch (error) {
-      return rejectWithValue("Failed to fetch stories");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -131,7 +135,8 @@ export const saveOrUpdateStory = createAsyncThunk(
 
       return response.data.data;
     } catch (error) {
-      return rejectWithValue("Failed to save or update story");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -147,7 +152,8 @@ export const addClaps = createAsyncThunk(
       console.log("clap res:", response.data.data);
       return response.data.data;
     } catch (error) {
-      return rejectWithValue("Failed to update claps");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -165,7 +171,8 @@ export const saveStoryToCollection = createAsyncThunk(
       });
       return response.data.data;
     } catch (error) {
-      return rejectWithValue("Failed to save story to collection");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -177,7 +184,8 @@ export const fetchSavedCollections = createAsyncThunk(
       const response = await axiosInstance.get("/api/save-collection");
       return response.data.data;
     } catch (error) {
-      return rejectWithValue("Failed to fetch saved collections");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -191,7 +199,8 @@ export const fetchStoryByAuthor = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue("Failed to fetch story by author");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -203,7 +212,8 @@ export const deleteStory = createAsyncThunk(
       const response = await axiosInstance.delete(`/api/stories/${storyId}`);
       return response.data;
     } catch (error) {
-      return rejectWithValue("Failed to delete story");
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -279,7 +289,7 @@ const storySlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAllStories.rejected, (state, action) => {
-        state.error = action.payload as string;
+        state.error = (action.payload as string) || "Somthing Went";
         state.articles = [];
       })
       .addCase(saveOrUpdateStory.pending, (state) => {
@@ -315,7 +325,13 @@ const storySlice = createSlice({
         state.isLoading = true;
       })
       .addCase(saveStoryToCollection.fulfilled, (state, action) => {
-        const { storyId, collectionName } = action.payload;
+        state.isLoading = false;
+        const { storyId, collectionName, stories } = action.payload;
+
+        if (!Array.isArray(state.savedCollections)) {
+          state.savedCollections = [];
+        }
+
         const collection = state.savedCollections.find(
           (c) => c.collectionName === collectionName
         );
@@ -329,19 +345,23 @@ const storySlice = createSlice({
               (story) => story?._id !== storyId
             );
           } else {
-            collection.stories.push(action.payload.stories);
+            collection.stories.push(stories);
           }
         } else {
           state.savedCollections.push({
             collectionName,
-            stories: [action.payload.stories],
+            stories: [stories],
             _id: "",
           });
         }
       })
+
       .addCase(saveStoryToCollection.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(fetchSavedCollections.pending, (state) => {
+        state.isLoading = true;
       })
       .addCase(fetchSavedCollections.fulfilled, (state, action) => {
         state.savedCollections = action.payload;
