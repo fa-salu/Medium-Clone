@@ -1,4 +1,3 @@
-// src/routes/userRoutes.ts
 import express from "express";
 import { login } from "../controllers/authController"; // Import login controller
 import { errorCatch } from "../utils/error/errorCatch";
