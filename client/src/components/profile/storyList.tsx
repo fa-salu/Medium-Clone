@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
 import {
   addClaps,
   deleteStory,
@@ -10,7 +9,7 @@ import {
 import type { RootState } from "@/lib/store";
 import { ThumbUpAltOutlined, ChatBubbleOutline } from "@mui/icons-material";
 import BookmarkPopover from "../ui/savedStoryPopover";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import MoreOptionsPopover from "../ui/moreOptionProfile";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,12 +20,12 @@ interface StoryListProps {
 
 export default function StoryList({ selectedTab }: StoryListProps) {
   const dispatch = useAppDispatch();
-  const articles = useSelector((state: RootState) => state.story.articles);
-  const collections = useSelector(
-    (state: RootState) => state.story.savedCollections
+  const articles = useAppSelector((state: RootState) => state.story.articles);
+  const collections = useAppSelector(
+    (state: RootState) => state.story.savedCollections || []
   );
 
-  const author = useSelector((state: RootState) => state.user.user);
+  const author = useAppSelector((state: RootState) => state.user.user);
   const authorId = author?._id;
 
   const handleClap = (storyId: string) => {
@@ -85,11 +84,11 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                     <h2 className="text-lg font-semibold flex-grow pr-4">
                       {article.title}
                     </h2>
-                    <img
-                      src={article.imageUri}
+                    {/* <img
+                      src={article.coverImage}
                       alt={article.title || "Article Image"}
                       className="w-24 h-24 object-cover rounded-lg"
-                    />
+                    /> */}
                   </div>
                 </Link>
                 <div className="flex justify-between items-center text-sm text-gray-600">
@@ -105,29 +104,25 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                       <ThumbUpAltOutlined className="mr-1 text-gray-600" />
                       {article.claps || 0}
                     </button>
-                    <span className="flex items-center">
+                    <Link href={`${article._id}`}>
                       <ChatBubbleOutline className="mr-1 text-gray-600" />
-                      {0}
-                    </span>
+                    </Link>
                   </div>
                   <div className="flex items-center space-x-4">
-                    {collections && collections.length > 0 ? (
-                      <BookmarkPopover
-                        storyId={article._id}
-                        collections={collections.map((c) => c.collectionName)}
-                        onAddToCollection={(collectionName) =>
-                          handleAddToCollection(collectionName, article._id)
-                        }
-                        onCreateNewCollection={(newCollectionName) =>
-                          handleCreateNewCollection(
-                            newCollectionName,
-                            article._id
-                          )
-                        }
-                      />
-                    ) : (
-                      <p>No collections available</p>
-                    )}
+                    <BookmarkPopover
+                      storyId={article._id}
+                      collections={collections?.map?.((c) => c.collectionName)}
+                      onAddToCollection={(collectionName) =>
+                        handleAddToCollection(collectionName, article._id)
+                      }
+                      onCreateNewCollection={(newCollectionName) =>
+                        handleCreateNewCollection(
+                          newCollectionName,
+                          article._id
+                        )
+                      }
+                    />
+
                     <MoreOptionsPopover
                       onDelete={() => handleDeleteStory(article._id)}
                     />

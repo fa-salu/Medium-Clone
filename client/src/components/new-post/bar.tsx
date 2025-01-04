@@ -3,12 +3,15 @@ import { Avatar, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import PublishButton from "@/components/ui/publishButton";
 import Link from "next/link";
+import { useAppSelector } from "@/lib/hooks";
+import type { RootState } from "@/lib/store";
 
 interface BarProps {
   setShowIcons: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Bar({ setShowIcons }: BarProps) {
+  const user = useAppSelector((state: RootState) => state.user?.user);
   const handleAddIconClick = () => {
     setShowIcons((prev) => !prev);
   };
@@ -33,10 +36,7 @@ export default function Bar({ setShowIcons }: BarProps) {
           <AddCircleIcon />
         </IconButton>
         <IconButton className="p-2 hover:bg-gray-200 rounded-full">
-          <Avatar
-            alt="Remy Sharp"
-            src="https://img.freepik.com/premium-vector/avatar-icon0002_750950-43.jpg?ga=GA1.1.478860807.1733286450&semt=ais_hybrid"
-          />
+          <Avatar alt={user?.name} src={user?.imageUri} />
         </IconButton>
       </div>
     </div>

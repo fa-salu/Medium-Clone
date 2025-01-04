@@ -22,6 +22,7 @@ export default function IconSet({
     const file = event.target.files?.[0];
     if (file) {
       dispatch(uploadImage(file))
+        .unwrap()
         .then(() => {
           setShowImageUpload(false);
         })

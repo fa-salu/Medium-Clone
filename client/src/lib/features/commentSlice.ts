@@ -5,7 +5,17 @@ import { axiosErrorCatch } from "@/utils/axios-ErrorCatch";
 export interface Comment {
   _id: string;
   content: string;
-  author: string;
+  parentComment: string;
+  author: {
+    _id: string;
+    name: string;
+    email: string;
+    imageUri: string;
+    likedPosts: string[];
+    clappedPosts: string[];
+    createdAt: string;
+    updatedAt: string;
+  };
   createdAt: string;
   updatedAt: string;
   replies?: Comment[];
@@ -29,7 +39,7 @@ export const fetchCommentsByStory = createAsyncThunk(
   "comments/fetchCommentsByStory",
   async (storyId: string, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/comments/story/${storyId}`);
+      const response = await axiosInstance.get(`/api/comments/${storyId}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(axiosErrorCatch(error));
@@ -42,7 +52,7 @@ export const fetchRepliesByComment = createAsyncThunk(
   async (commentId: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(
-        `/comments/replies/${commentId}`
+        `/api/comments/replays/${commentId}`
       );
       return response.data.data;
     } catch (error) {
@@ -58,9 +68,32 @@ export const createComment = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await axiosInstance.post("/comments", {
+      const response = await axiosInstance.post("/api/comment", {
         content,
         storyId,
+      });
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(axiosErrorCatch(error));
+    }
+  }
+);
+
+export const createReply = createAsyncThunk(
+  "comments/createReply",
+  async (
+    {
+      content,
+      storyId,
+      parentCommentId,
+    }: { content: string; storyId: string; parentCommentId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.post("/api/comment/reply", {
+        content,
+        storyId,
+        parentCommentId,
       });
       return response.data.data;
     } catch (error) {
@@ -144,6 +177,19 @@ const commentsSlice = createSlice({
         state.comments.push(action.payload);
       })
       .addCase(createComment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(createReply.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createReply.fulfilled, (state, action) => {
+        state.loading = false;
+        state.replies.push(action.payload);
+      })
+      .addCase(createReply.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

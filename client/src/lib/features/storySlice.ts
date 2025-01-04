@@ -20,11 +20,11 @@ interface Article {
   title: string;
   content: string;
   category: string;
+  coverImage?: string;
   createdAt: string;
   claps: number;
   likes: number;
   authorDetails?: AuthorDetails;
-  imageUri: string;
 }
 
 interface SavedCollection {
@@ -38,6 +38,7 @@ interface StoryState {
   title: string;
   content: string;
   category: string;
+  coverImage: string | null;
   id: string | null;
   isSaving: boolean;
   isLoading: boolean;
@@ -51,6 +52,7 @@ const initialState: StoryState = {
   title: "",
   content: "",
   category: "",
+  coverImage: null,
   id: null,
   isSaving: false,
   isLoading: false,
@@ -231,6 +233,9 @@ const storySlice = createSlice({
     setCategory(state, action: PayloadAction<string>) {
       state.category = action.payload;
     },
+    updateCoverImage(state, action: PayloadAction<string>) {
+      state.coverImage = action.payload;
+    },
     loadStoryIdFromCookies(state) {
       const storyId = Cookies.get("storyId");
       if (storyId && !state.id) {
@@ -364,7 +369,7 @@ const storySlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchSavedCollections.fulfilled, (state, action) => {
-        state.savedCollections = action.payload;
+        state.savedCollections = action.payload || [];
         state.error = null;
       })
       .addCase(fetchSavedCollections.rejected, (state, action) => {
@@ -388,5 +393,6 @@ export const {
   setCategory,
   loadStoryIdFromCookies,
   resetStory,
+  updateCoverImage,
 } = storySlice.actions;
 export default storySlice.reducer;

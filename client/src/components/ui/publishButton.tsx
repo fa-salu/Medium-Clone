@@ -60,6 +60,7 @@ export default function PublishButton() {
         savedCollections: [],
         isLoading: false,
         article: null,
+        coverImage: null,
       })
     ).then(() => {
       Cookies.remove("storyId");
@@ -91,7 +92,6 @@ export default function PublishButton() {
             onChange={(e) => dispatch(setTitle(e.target.value))}
           />
 
-          {/* Category Selection (Topic Dropdown) */}
           <FormControl fullWidth margin="normal">
             <InputLabel>Category</InputLabel>
             <Select

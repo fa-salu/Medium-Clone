@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/utils/axios";
 import { axiosErrorCatch } from "@/utils/axios-ErrorCatch";
+import { updateCoverImage } from "./storySlice";
 
 export const uploadImage = createAsyncThunk(
   "upload/uploadImage",
-  async (file: File, { rejectWithValue }) => {
+  async (file: File, { rejectWithValue, dispatch }) => {
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -15,7 +16,12 @@ export const uploadImage = createAsyncThunk(
         },
       });
 
-      return response.data.url;
+      const imageUrl = response.data.url;
+
+      // You can dispatch any additional actions here
+      dispatch(updateCoverImage(imageUrl));
+
+      return imageUrl;
     } catch (error) {
       return rejectWithValue(axiosErrorCatch(error));
     }

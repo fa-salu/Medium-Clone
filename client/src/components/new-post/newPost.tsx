@@ -36,9 +36,9 @@ export default function NewStory() {
     }, 2000)
   ).current;
 
-  useEffect(() => {
-    dispatch(loadStoryIdFromCookies());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(loadStoryIdFromCookies());
+  // }, [dispatch]);
 
   useEffect(() => {
     if (id) {
@@ -60,6 +60,7 @@ export default function NewStory() {
             savedCollections: [],
             isLoading: false,
             article: null,
+            coverImage: null,
           })
         );
       }

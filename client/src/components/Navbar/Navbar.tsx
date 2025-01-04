@@ -8,12 +8,16 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import AvatarComponent from "@/components/Navbar/avatar";
 import Link from "next/link";
+import { useAppDispatch } from "@/lib/hooks";
+import { resetStory } from "@/lib/features/storySlice";
+import SearchComponent from "../search/search";
 
 export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showNavbar, setShowNavbar] = useState(true);
   const open = Boolean(anchorEl);
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -50,6 +54,7 @@ export default function Navbar() {
   };
 
   const handleCreateClick = () => {
+    dispatch(resetStory());
     router.push("/new-story");
   };
 
@@ -71,11 +76,7 @@ export default function Navbar() {
         <div className="text-2xl font-bold">Medium</div>
       </Link>
 
-      <input
-        type="text"
-        placeholder="Search"
-        className="border rounded-lg px-4 py-1 focus:outline-none"
-      />
+      <SearchComponent />
 
       <div className="flex space-x-4">
         <IconButton onClick={handleCreateClick}>

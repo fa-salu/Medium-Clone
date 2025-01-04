@@ -66,7 +66,7 @@ export default function BookmarkPopover({
       >
         <div className="p-4 space-y-2">
           <p className="text-lg font-semibold">Collections</p>
-          {collections.length > 0 ? (
+          {collections?.length > 0 ? (
             collections.map((collection) => (
               <button
                 type="button"

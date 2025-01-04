@@ -133,6 +133,7 @@ export const getRepliesByComment = async (
       $project: {
         content: 1,
         author: "$authorDetails",
+        parentComment: 1,
         createdAt: 1,
         updatedAt: 1,
       },

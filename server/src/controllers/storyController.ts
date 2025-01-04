@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 
 // Create a new story
 export const createStory = async (req: CustomRequest, res: Response) => {
-  const { title, content, category } = req.body;
+  const { title, content, category, coverImage } = req.body;
   const userId = req.user?.id;
 
   if (!userId) {
@@ -19,6 +19,7 @@ export const createStory = async (req: CustomRequest, res: Response) => {
     title,
     content,
     category,
+    coverImage: coverImage || "",
     author: userId,
     createdAt: Date.now(),
   });
@@ -33,7 +34,7 @@ export const createStory = async (req: CustomRequest, res: Response) => {
 // update story
 export const updateStorys = async (req: CustomRequest, res: Response) => {
   const { id } = req.params;
-  const { title, content, category } = req.body;
+  const { title, content, category, coverImage } = req.body;
 
   const story = await Story.findById(id);
 
@@ -44,6 +45,7 @@ export const updateStorys = async (req: CustomRequest, res: Response) => {
   story.title = title;
   story.content = content;
   story.category = category;
+  story.coverImage = coverImage;
   await story.save();
 
   res.status(200).json({ message: "Story updated successfully", story });

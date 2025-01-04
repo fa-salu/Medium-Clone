@@ -4,6 +4,7 @@ import {
   addClaps,
   fetchSavedCollections,
   fetchStory,
+  resetStory,
   saveStoryToCollection,
 } from "@/lib/features/storySlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -12,18 +13,20 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect } from "react";
 import parse from "html-react-parser";
-import { ChatBubbleOutline, ThumbUpAltOutlined } from "@mui/icons-material";
+import { ThumbUpAltOutlined } from "@mui/icons-material";
 import BookmarkPopover from "@/components/ui/savedStoryPopover";
 import { Button } from "@mui/material";
+import CommentsSection from "@/components/Comment/commentSection";
+import StoryPageSkelton from "@/components/ui/skelton/storyPage";
 
 export default function Page() {
   const params = useParams();
   const storyId = params.storyId as string;
   const dispatch = useAppDispatch();
-  const article = useAppSelector((state: RootState) => state.story.article);
-  const collections = useAppSelector(
-    (state: RootState) => state.story.savedCollections
+  const { article, isLoading, savedCollections } = useAppSelector(
+    (state: RootState) => state.story
   );
+  const collections = savedCollections || [];
   const author = useAppSelector((state: RootState) => state.user.user?._id);
 
   const FollowBtnShow = author === article?.authorDetails?._id;
@@ -55,68 +58,66 @@ export default function Page() {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col items-center justify-center">
       <div className="flex flex-col px-6 py-8 space-y-6 w-full max-w-3xl ">
-        {article ? (
-          <div>
-            <h1 className="text-4xl font-bold mb-4 ">{article.title}</h1>
+        {isLoading ? (
+          <StoryPageSkelton />
+        ) : (
+          article && (
+            <div>
+              <h1 className="text-4xl font-bold mb-4 ">{article.title}</h1>
 
-            <div className="flex items-center space-x-4 mb-6">
-              {article.authorDetails?.imageUri ? (
-                <Image
-                  src={article.authorDetails.imageUri}
-                  alt={article.authorDetails.name || "Author Name"}
-                  width={80}
-                  height={80}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-20 h-20 rounded-full bg-gray-300" />
-              )}
-              <div className="text-sm font-medium">
-                {article.authorDetails?.name}{" "}
-                {!FollowBtnShow && (
-                  <Button className="text-green-600">Follow</Button>
+              <div className="flex items-center space-x-4 mb-6">
+                {article.authorDetails?.imageUri ? (
+                  <Image
+                    src={article.authorDetails.imageUri}
+                    alt={article.authorDetails.name || "Author Name"}
+                    width={80}
+                    height={80}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-gray-300" />
                 )}
-                <div className="text-sm text-gray-500">
-                  {new Date(article.createdAt).toLocaleDateString()}
+                <div className="text-sm font-medium">
+                  {article.authorDetails?.name}{" "}
+                  {!FollowBtnShow && (
+                    <Button className="text-green-600">Follow</Button>
+                  )}
+                  <div className="text-sm text-gray-500">
+                    {new Date(article.createdAt).toLocaleDateString()}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {article.imageUri && (
-              <div className="w-full mb-6">
-                <Image
-                  src={article.imageUri}
-                  alt="Story Image"
-                  width={800}
-                  height={400}
-                  className="w-full rounded-lg object-cover"
-                />
-              </div>
-            )}
-
-            <div className="border-y py-5 px-2">
-              <div className="flex justify-between items-center text-sm text-gray-600">
-                <div className="flex items-center space-x-4">
-                  <button
-                    type="button"
-                    className="flex items-center"
-                    onClick={() => handleClap(article._id)}
-                  >
-                    <ThumbUpAltOutlined className="mr-1 text-gray-600" />
-                    {article.claps || 0}
-                  </button>
-                  <span className="flex items-center">
-                    <ChatBubbleOutline className="mr-1 text-gray-600" />
-                    {10}
-                  </span>
+              {article.coverImage && (
+                <div className="w-full mb-6">
+                  <Image
+                    src={article.coverImage}
+                    alt="Story Image"
+                    width={800}
+                    height={400}
+                    className="w-full rounded-lg object-cover"
+                  />
                 </div>
-                <div className="flex items-center space-x-4">
-                  {collections && collections.length > 0 ? (
+              )}
+
+              <div className="border-y py-5 px-2">
+                <div className="flex justify-between items-center text-sm text-gray-600">
+                  <div className="flex items-center space-x-4">
+                    <button
+                      type="button"
+                      className="flex items-center"
+                      onClick={() => handleClap(article._id)}
+                    >
+                      <ThumbUpAltOutlined className="mr-1 text-gray-600" />
+                      {article.claps || 0}
+                    </button>
+                  </div>
+                  <div className="flex items-center space-x-4">
                     <BookmarkPopover
                       storyId={article._id}
-                      collections={collections.map((c) => c.collectionName)}
+                      collections={collections?.map?.((c) => c.collectionName)}
                       onAddToCollection={(collectionName) =>
                         handleAddToCollection(collectionName, article._id)
                       }
@@ -127,21 +128,18 @@ export default function Page() {
                         )
                       }
                     />
-                  ) : (
-                    <p>No collections available</p>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="text-lg leading-relaxed mt-6">
-              {article.content && parse(article.content)}
+              <div className="text-lg leading-relaxed mt-6">
+                {article.content && parse(article.content)}
+              </div>
             </div>
-          </div>
-        ) : (
-          <p>Loading...</p>
+          )
         )}
       </div>
+      <CommentsSection storyId={storyId} />
     </div>
   );
 }

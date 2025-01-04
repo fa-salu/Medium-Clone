@@ -19,10 +19,10 @@ import Link from "next/link";
 
 export default function MainFeed() {
   const dispatch = useAppDispatch();
-  const articles = useSelector((state: RootState) => state.story.articles);
-  const collections = useSelector(
-    (state: RootState) => state.story.savedCollections
+  const { articles, savedCollections, isLoading } = useSelector(
+    (state: RootState) => state.story
   );
+  const collections = savedCollections || [];
 
   const noArticles = !articles || articles.length === 0;
 
@@ -88,11 +88,11 @@ export default function MainFeed() {
                 <h2 className="text-lg font-semibold flex-grow pr-4">
                   {article.title}
                 </h2>
-                <img
-                  src={article.imageUri}
+                {/* <img
+                  src={article.coverImage}
                   alt={article.title || "Article Image"}
                   className="w-24 h-24 object-cover rounded-lg"
-                />
+                /> */}
               </div>
             </Link>
 
@@ -107,27 +107,22 @@ export default function MainFeed() {
                   <ThumbUpAltOutlined className="mr-1 text-gray-600" />
                   {article.claps || 0}
                 </button>
-                <span className="flex items-center">
+                <Link href={`/${article._id}`}>
                   <ChatBubbleOutline className="mr-1 text-gray-600" />
-                  {10}
-                </span>
+                </Link>
               </div>
 
               <div className="flex items-center space-x-4">
-                {collections && collections.length > 0 ? (
-                  <BookmarkPopover
-                    storyId={article._id}
-                    collections={collections.map((c) => c.collectionName)}
-                    onAddToCollection={(collectionName) =>
-                      handleAddToCollection(collectionName, article._id)
-                    }
-                    onCreateNewCollection={(newCollectionName) =>
-                      handleCreateNewCollection(newCollectionName, article._id)
-                    }
-                  />
-                ) : (
-                  <p>No collections available</p>
-                )}
+                <BookmarkPopover
+                  storyId={article._id}
+                  collections={collections?.map?.((c) => c.collectionName)}
+                  onAddToCollection={(collectionName) =>
+                    handleAddToCollection(collectionName, article._id)
+                  }
+                  onCreateNewCollection={(newCollectionName) =>
+                    handleCreateNewCollection(newCollectionName, article._id)
+                  }
+                />
 
                 <FollowPopover
                   authorName={article.authorDetails?.name || "Unknown"}
