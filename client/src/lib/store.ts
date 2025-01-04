@@ -4,6 +4,7 @@ import uploadReducer from "@/lib/features/uploadSlice";
 import storyReducer from "@/lib/features/storySlice";
 import topicReducer from "@/lib/features/topicSlice";
 import commentReducer from "@/lib/features/commentSlice";
+import topicFollowReducer from "@/lib/features/topicFollowSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -13,6 +14,7 @@ export const makeStore = () => {
       story: storyReducer,
       topic: topicReducer,
       comment: commentReducer,
+      topicFollow: topicFollowReducer,
     },
   });
 };
