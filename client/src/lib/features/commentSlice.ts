@@ -123,7 +123,7 @@ export const deleteComment = createAsyncThunk(
   "comments/deleteComment",
   async (commentId: string, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete(`/comments/${commentId}`);
+      await axiosInstance.delete(`/api/comment/${commentId}`);
       return commentId;
     } catch (error) {
       return rejectWithValue(axiosErrorCatch(error));

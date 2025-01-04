@@ -5,11 +5,14 @@ import {
   fetchCommentsByStory,
   fetchRepliesByComment,
   createReply,
+  deleteComment,
 } from "@/lib/features/commentSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import type { RootState } from "@/lib/store";
-import { MoreHoriz, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import DeletePopover from "../ui/deletePopover";
+import { Button } from "@mui/material";
 
 interface Props {
   storyId: string;
@@ -41,6 +44,10 @@ export default function CommentsSection({ storyId }: Props) {
       });
       setNewComment("");
     }
+  };
+
+  const handleDelete = (commentId: string) => {
+    dispatch(deleteComment(commentId));
   };
 
   const handleReplyChange = (commentId: string, value: string) => {
@@ -106,18 +113,18 @@ export default function CommentsSection({ storyId }: Props) {
             onChange={(e) => setNewComment(e.target.value)}
             className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-gray-500"
           />
-          <button
+          <Button
             onClick={handleCreate}
             type="button"
             className={`mt-2 px-4 py-2 rounded-lg ${
               newComment.trim()
-                ? "bg-blue-500 text-white hover:bg-blue-600"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                ? "text-black bg-slate-300 hover:bg-slate-500 hover:text-white"
+                : " text-gray-500 cursor-not-allowed"
             }`}
             disabled={!newComment.trim()}
           >
             Respond
-          </button>
+          </Button>
         </div>
 
         <div className="space-y-6">
@@ -167,7 +174,7 @@ export default function CommentsSection({ storyId }: Props) {
                 >
                   Reply
                 </button>
-                <MoreHoriz />
+                <DeletePopover onDelete={() => handleDelete(comment._id)} />
               </div>
 
               {replyInputVisible[comment._id] && (
@@ -181,18 +188,18 @@ export default function CommentsSection({ storyId }: Props) {
                     }
                     className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-gray-500"
                   />
-                  <button
+                  <Button
                     type="button"
                     onClick={() => handleReplySubmit(comment._id)}
                     className={`mt-2 px-4 py-2 rounded-lg ${
                       newReply[comment._id]?.trim()
-                        ? "bg-blue-500 text-white hover:bg-blue-600"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        ? " text-black bg-slate-300 hover:bg-slate-500 hover:text-white"
+                        : "text-gray-500 cursor-not-allowed"
                     }`}
                     disabled={!newReply[comment._id]?.trim()}
                   >
-                    Submit Reply
-                  </button>
+                    Reply
+                  </Button>
                 </div>
               )}
 
@@ -224,9 +231,14 @@ export default function CommentsSection({ storyId }: Props) {
                             </p>
                           </div>
                         </div>
-                        <p className="text-gray-800 whitespace-pre-wrap">
-                          {reply.content}
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-gray-800 whitespace-pre-wrap">
+                            {reply.content}
+                          </p>
+                          <DeletePopover
+                            onDelete={() => handleDelete(reply._id)}
+                          />
+                        </div>
                       </div>
                     ))}
                 </div>
