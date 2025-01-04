@@ -9,7 +9,6 @@ import {
   setTitle,
   setContent,
   saveOrUpdateStory,
-  loadStoryIdFromCookies,
   fetchStory,
 } from "@/lib/features/storySlice";
 import debounce from "@/utils/debounce";
