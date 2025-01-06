@@ -10,10 +10,9 @@ import { fetchFollowedTopics } from "@/lib/features/topicFollowSlice";
 
 export default function TopicBar() {
   const [selectedCategory, setSelectedCategory] = useState("For You");
-  const [isScrollable, setIsScrollable] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const { followTopics, status, error } = useAppSelector(
+  const { followTopics } = useAppSelector(
     (state: RootState) => state.topicFollow
   );
 
@@ -23,20 +22,6 @@ export default function TopicBar() {
   useEffect(() => {
     dispatch(fetchFollowedTopics());
   }, [dispatch]);
-
-  useEffect(() => {
-    const checkScrollable = () => {
-      const container = containerRef.current;
-      if (container) {
-        setIsScrollable(container.scrollWidth > container.clientWidth);
-      }
-    };
-
-    checkScrollable();
-
-    window.addEventListener("resize", checkScrollable);
-    return () => window.removeEventListener("resize", checkScrollable);
-  }, []);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -56,22 +41,21 @@ export default function TopicBar() {
   };
 
   return (
-    <div className="flex sticky top-0 items-center space-x-4 p-4 border-b bg-white">
-      {isScrollable && (
+    <div className="flex sticky top-0 items-center space-x-4 p-4 border-b justify-between bg-white">
+      <div className="flex items-center space-x-4">
         <ChevronLeft
           className="cursor-pointer text-gray-800"
           onClick={() => scrollContainer("left")}
         />
-      )}
-
-      <Link href={"/explore-topics"}>
-        <Add className="text-gray-800" />
-      </Link>
+        <Link href={"/explore-topics"}>
+          <Add className="text-gray-800" />
+        </Link>
+      </div>
 
       <div
         ref={containerRef}
         id="category-container"
-        className="flex space-x-4 overflow-x-auto"
+        className="flex space-x-4 overflow-x-auto items-start justify-start flex-grow"
       >
         {displayedTopics && displayedTopics.length > 0 ? (
           displayedTopics.map((category) => (
@@ -91,12 +75,12 @@ export default function TopicBar() {
         )}
       </div>
 
-      {isScrollable && (
+      <div className="flex items-center space-x-4">
         <ChevronRight
           className="cursor-pointer text-gray-800"
           onClick={() => scrollContainer("right")}
         />
-      )}
+      </div>
     </div>
   );
 }
