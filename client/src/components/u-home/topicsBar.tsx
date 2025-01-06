@@ -1,22 +1,42 @@
 "use client";
 
 import { Add, ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchAllStories } from "@/lib/features/storySlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { fetchTopics } from "@/lib/features/topicSlice";
+import type { RootState } from "@/lib/store";
+import Link from "next/link";
+import { fetchFollowedTopics } from "@/lib/features/topicFollowSlice";
 
 export default function TopicBar() {
   const [selectedCategory, setSelectedCategory] = useState("For You");
+  const [isScrollable, setIsScrollable] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const { topics, loading, error } = useAppSelector((state) => state.topic);
+  const { followTopics, status, error } = useAppSelector(
+    (state: RootState) => state.topicFollow
+  );
 
   const fixedTopics = ["For You", "Following"];
-  const displayedTopics = fixedTopics.concat(topics || []);
+  const displayedTopics = fixedTopics.concat(followTopics?.topics || []);
 
   useEffect(() => {
-    dispatch(fetchTopics());
+    dispatch(fetchFollowedTopics());
   }, [dispatch]);
+
+  useEffect(() => {
+    const checkScrollable = () => {
+      const container = containerRef.current;
+      if (container) {
+        setIsScrollable(container.scrollWidth > container.clientWidth);
+      }
+    };
+
+    checkScrollable();
+
+    window.addEventListener("resize", checkScrollable);
+    return () => window.removeEventListener("resize", checkScrollable);
+  }, []);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -24,7 +44,7 @@ export default function TopicBar() {
   };
 
   const scrollContainer = (direction: "left" | "right") => {
-    const container = document.getElementById("category-container");
+    const container = containerRef.current;
     if (container) {
       const scrollAmount = 150;
       if (direction === "right") {
@@ -36,15 +56,23 @@ export default function TopicBar() {
   };
 
   return (
-    <div className="flex sticky top-0 space-x-4 overflow-x-auto  p-4 border-b bg-white">
-      <ChevronLeft
-        className="cursor-pointer text-gray-800"
-        onClick={() => scrollContainer("left")}
-      />
+    <div className="flex sticky top-0 items-center space-x-4 p-4 border-b bg-white">
+      {isScrollable && (
+        <ChevronLeft
+          className="cursor-pointer text-gray-800"
+          onClick={() => scrollContainer("left")}
+        />
+      )}
 
-      <Add className="text-gray-800" />
+      <Link href={"/explore-topics"}>
+        <Add className="text-gray-800" />
+      </Link>
 
-      <div id="category-container" className="flex space-x-4 overflow-x-auto">
+      <div
+        ref={containerRef}
+        id="category-container"
+        className="flex space-x-4 overflow-x-auto"
+      >
         {displayedTopics && displayedTopics.length > 0 ? (
           displayedTopics.map((category) => (
             <button
@@ -63,10 +91,12 @@ export default function TopicBar() {
         )}
       </div>
 
-      <ChevronRight
-        className="cursor-pointer text-gray-800"
-        onClick={() => scrollContainer("right")}
-      />
+      {isScrollable && (
+        <ChevronRight
+          className="cursor-pointer text-gray-800"
+          onClick={() => scrollContainer("right")}
+        />
+      )}
     </div>
   );
 }

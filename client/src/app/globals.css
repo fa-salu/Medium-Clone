@@ -35,3 +35,13 @@ blockquote {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Hide scrollbar for specific container */
+#category-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#category-container::-webkit-scrollbar {
+  display: none;
+}
