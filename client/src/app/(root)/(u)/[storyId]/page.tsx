@@ -4,7 +4,6 @@ import {
   addClaps,
   fetchSavedCollections,
   fetchStory,
-  resetStory,
   saveStoryToCollection,
 } from "@/lib/features/storySlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";

@@ -22,6 +22,8 @@ export default function MainFeed() {
   const { articles, savedCollections, isLoading } = useSelector(
     (state: RootState) => state.story
   );
+
+  console.log("aaaa", articles);
   const collections = savedCollections || [];
 
   const noArticles = !articles || articles.length === 0;
@@ -81,18 +83,29 @@ export default function MainFeed() {
               ) : (
                 <div className="w-6 h-6 rounded-full bg-gray-900" />
               )}
-              <p>{article.authorDetails?.name}</p>
+              <Link
+                href={{
+                  pathname: `/u/@${article.authorDetails?.name}`,
+                  query: { userId: article.authorDetails?._id },
+                }}
+              >
+                <p>{article.authorDetails?.name}</p>
+              </Link>
             </div>
             <Link href={`/${article._id}`}>
               <div className="flex justify-between">
                 <h2 className="text-lg font-semibold flex-grow pr-4">
                   {article.title}
                 </h2>
-                {/* <img
-                  src={article.coverImage}
-                  alt={article.title || "Article Image"}
-                  className="w-24 h-24 object-cover rounded-lg"
-                /> */}
+                {article.coverImage && (
+                  <Image
+                    src={article.coverImage}
+                    alt={article.title || "Article Image"}
+                    width={100}
+                    height={100}
+                    className="w-24 h-24 object-cover rounded-lg"
+                  />
+                )}
               </div>
             </Link>
 

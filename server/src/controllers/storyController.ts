@@ -45,7 +45,11 @@ export const updateStorys = async (req: CustomRequest, res: Response) => {
   story.title = title;
   story.content = content;
   story.category = category;
-  story.coverImage = coverImage;
+
+  if (coverImage !== undefined && !story.coverImage) {
+    story.coverImage = coverImage;
+  }
+
   await story.save();
 
   res.status(200).json({ message: "Story updated successfully", story });
@@ -105,13 +109,20 @@ export const getAllStories = async (req: CustomRequest, res: Response) => {
       },
     },
     {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+    {
       $project: {
         title: 1,
         content: 1,
+        coverImage: 1,
         category: 1,
         claps: 1,
         likes: 1,
         createdAt: 1,
+        "authorDetails._id": 1,
         "authorDetails.name": 1,
         "authorDetails.email": 1,
         "authorDetails.imageUri": 1,
@@ -132,7 +143,7 @@ export const getAllStories = async (req: CustomRequest, res: Response) => {
 
 // Get all stories by author
 export const getStoriesByAuthor = async (req: CustomRequest, res: Response) => {
-  const userId = req.user?.id;
+  const userId = req.params.userId;
 
   if (!userId) {
     return res.status(400).json({ message: "User ID is required." });

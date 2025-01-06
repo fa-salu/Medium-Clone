@@ -10,9 +10,11 @@ import { uploadImage, resetImage } from "@/lib/features/uploadSlice";
 export default function IconSet({
   showIcons,
   storyRef,
+  setCoverImage,
 }: {
   showIcons: boolean;
   storyRef: React.RefObject<HTMLDivElement>;
+  setCoverImage: (url: string) => void;
 }) {
   const [showImageUpload, setShowImageUpload] = useState(false);
   const dispatch = useAppDispatch();
@@ -33,18 +35,22 @@ export default function IconSet({
   };
 
   useEffect(() => {
-    if (imageUrl && storyRef.current) {
-      const editor = storyRef.current as HTMLDivElement;
+    if (imageUrl) {
+      setCoverImage(imageUrl); // Update the cover image in the parent component.
 
-      const imgElement = document.createElement("img");
-      imgElement.src = imageUrl;
-      imgElement.alt = "uploaded-image";
+      if (storyRef.current) {
+        const editor = storyRef.current as HTMLDivElement;
 
-      editor.appendChild(imgElement);
+        const imgElement = document.createElement("img");
+        imgElement.src = imageUrl;
+        imgElement.alt = "uploaded-image";
+
+        editor.appendChild(imgElement);
+      }
 
       dispatch(resetImage());
     }
-  }, [imageUrl, storyRef, dispatch]);
+  }, [imageUrl, storyRef, setCoverImage, dispatch]);
 
   return (
     <>

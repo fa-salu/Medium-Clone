@@ -66,7 +66,7 @@ export default function PublishButton() {
       Cookies.remove("storyId");
       dispatch(loadStoryIdFromCookies());
       dispatch(resetStory());
-      router.push("/u-home");
+      router.push("/profile");
       handleClose();
     });
   };

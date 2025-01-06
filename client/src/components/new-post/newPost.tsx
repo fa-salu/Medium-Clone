@@ -10,6 +10,7 @@ import {
   setContent,
   saveOrUpdateStory,
   fetchStory,
+  loadStoryIdFromCookies,
 } from "@/lib/features/storySlice";
 import debounce from "@/utils/debounce";
 import Bar from "./bar";
@@ -17,6 +18,7 @@ import IconSet from "./addButton";
 
 export default function NewStory() {
   const dispatch = useAppDispatch();
+  const [coverImage, setCoverImage] = useState("");
   const { title, content, id } = useAppSelector((state) => state.story);
 
   const titleRef = useRef<HTMLDivElement>(null);
@@ -35,9 +37,9 @@ export default function NewStory() {
     }, 2000)
   ).current;
 
-  // useEffect(() => {
-  //   dispatch(loadStoryIdFromCookies());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(loadStoryIdFromCookies());
+  }, [dispatch]);
 
   useEffect(() => {
     if (id) {
@@ -53,20 +55,20 @@ export default function NewStory() {
             title,
             content,
             category: "",
+            coverImage,
             id,
             articles: [],
             error: null,
             savedCollections: [],
             isLoading: false,
             article: null,
-            coverImage: null,
           })
         );
       }
     }, 2000);
 
     autoSave();
-  }, [title, content, id, dispatch]);
+  }, [title, content, id, coverImage, dispatch]);
 
   useEffect(() => {
     if (titleRef.current) {
@@ -108,8 +110,9 @@ export default function NewStory() {
       <IconSet
         storyRef={storyRef as React.RefObject<HTMLDivElement>}
         showIcons={showIcons}
+        setCoverImage={setCoverImage}
       />
-      <div className="flex flex-col px-32 mt-10 space-y-6">
+      <div className="flex flex-col px-32 mt-10 space-y-6 mb-20">
         <div
           ref={titleRef}
           className="text-4xl font-bold placeholder-gray-400 bg-transparent focus:outline-none pl-2"
