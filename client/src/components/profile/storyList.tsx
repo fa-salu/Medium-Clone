@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import MoreOptionsPopover from "../ui/moreOptionProfile";
 import Image from "next/image";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 interface StoryListProps {
   selectedTab: string;
@@ -37,9 +38,16 @@ export default function StoryList({ selectedTab }: StoryListProps) {
   };
 
   const handleDeleteStory = (storyId: string) => {
-    dispatch(deleteStory({ storyId }));
-    if (authorId) {
-      dispatch(fetchStoryByAuthor({ authorId }));
+    dispatch(deleteStory({ storyId })).then(() => {
+      if (authorId) {
+        dispatch(fetchStoryByAuthor({ authorId }));
+      }
+    });
+  };
+
+  const handleEdit = (storyId: string) => {
+    if (storyId) {
+      Cookies.set("storyId", storyId);
     }
   };
 
@@ -128,6 +136,7 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                     />
 
                     <MoreOptionsPopover
+                      onEdit={() => handleEdit(article._id)}
                       onDelete={() => handleDeleteStory(article._id)}
                     />
                   </div>

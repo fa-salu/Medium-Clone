@@ -14,11 +14,12 @@ import type { RootState } from "@/lib/store";
 import { useAppDispatch } from "@/lib/hooks";
 import Image from "next/image";
 import BookmarkPopover from "../ui/savedStoryPopover";
-import FollowPopover from "../ui/followPopover";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function MainFeed() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { articles, savedCollections, isLoading } = useSelector(
     (state: RootState) => state.story
   );
@@ -38,10 +39,6 @@ export default function MainFeed() {
 
   const handleAddToCollection = (collectionName: string, storyId: string) => {
     dispatch(saveStoryToCollection({ storyId, collectionName }));
-  };
-
-  const handleFollow = (authorName: string) => {
-    console.log(`Followed ${authorName}`);
   };
 
   const handleCreateNewCollection = (
@@ -133,13 +130,6 @@ export default function MainFeed() {
                   }
                   onCreateNewCollection={(newCollectionName) =>
                     handleCreateNewCollection(newCollectionName, article._id)
-                  }
-                />
-
-                <FollowPopover
-                  authorName={article.authorDetails?.name || "Unknown"}
-                  onFollow={() =>
-                    handleFollow(article.authorDetails?.name || "")
                   }
                 />
               </div>

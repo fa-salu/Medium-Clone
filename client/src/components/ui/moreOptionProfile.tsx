@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Popover } from "@mui/material";
 import { MoreHoriz } from "@mui/icons-material";
+import Link from "next/link";
 
 interface MoreOptionsPopoverProps {
   onDelete: () => void;
+  onEdit: () => void;
 }
 
 export default function MoreOptionsPopover({
+  onEdit,
   onDelete,
 }: MoreOptionsPopoverProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -38,13 +41,18 @@ export default function MoreOptionsPopover({
         }}
       >
         <div className="bg-white shadow-lg rounded-md border border-gray-200">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="w-full text-center py-3 text-gray-700 hover:bg-gray-100 rounded-t-md"
-          >
-            Edit Story
-          </button>
+          <Link href={"/new-story"}>
+            <button
+              type="button"
+              onClick={() => {
+                onEdit();
+                handleClose();
+              }}
+              className="w-full text-center py-3 text-gray-700 hover:bg-gray-100 rounded-t-md"
+            >
+              Edit Story
+            </button>
+          </Link>
           <button
             type="button"
             onClick={() => {

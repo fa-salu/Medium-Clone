@@ -147,7 +147,6 @@ export const saveOrUpdateStory = createAsyncThunk(
 export const addClaps = createAsyncThunk(
   "story/addClaps",
   async ({ storyId }: { storyId: string }, { rejectWithValue }) => {
-    console.log("clap");
     try {
       const response = await axiosInstance.post(
         `/api/stories/${storyId}/claps`
