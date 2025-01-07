@@ -6,6 +6,7 @@ const isUserProtectedRoute = (route: string) =>
   route.startsWith("/new-story") ||
   route.startsWith("/profile") ||
   route.startsWith("/settings") ||
+  route.startsWith("/explore-topics") ||
   route.startsWith("/u/");
 
 export function middleware(req: NextRequest) {

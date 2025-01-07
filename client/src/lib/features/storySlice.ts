@@ -290,12 +290,14 @@ const storySlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAllStories.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.articles = action.payload || [];
         state.error = null;
       })
       .addCase(fetchAllStories.rejected, (state, action) => {
         state.error = (action.payload as string) || "Somthing Went";
         state.articles = [];
+        state.isLoading = false;
       })
       .addCase(saveOrUpdateStory.pending, (state) => {
         state.isSaving = true;
