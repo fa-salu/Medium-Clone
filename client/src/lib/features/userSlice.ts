@@ -7,6 +7,7 @@ interface UserState {
     _id: string | null;
     name: string;
     email: string;
+    bio?: string;
     imageUri: string;
   } | null;
   status: "idle" | "loading" | "succeeded" | "failed";

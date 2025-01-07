@@ -84,11 +84,15 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                     <h2 className="text-lg font-semibold flex-grow pr-4">
                       {article.title}
                     </h2>
-                    {/* <img
-                      src={article.coverImage}
-                      alt={article.title || "Article Image"}
-                      className="w-24 h-24 object-cover rounded-lg"
-                    /> */}
+                    {article.coverImage && (
+                      <Image
+                        src={article.coverImage}
+                        alt={article.title}
+                        width={100}
+                        height={100}
+                        className="w-24 h-24 object-cover rounded-lg"
+                      />
+                    )}
                   </div>
                 </Link>
                 <div className="flex justify-between items-center text-sm text-gray-600">

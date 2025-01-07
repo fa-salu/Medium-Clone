@@ -9,8 +9,8 @@ export default function Profile() {
   const [selectedTab, setSelectedTab] = useState("Home");
 
   return (
-    <div className="flex space-x-6 p-12 ">
-      <div className="w-2/3 ml-20">
+    <div className="flex space-x-6 px-12">
+      <div className="w-2/3 ml-20 border-r">
         <ProfileBar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
         <StoryList selectedTab={selectedTab} />
       </div>

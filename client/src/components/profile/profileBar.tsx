@@ -12,8 +12,8 @@ export default function ProfileBar({
 }: ProfileBarProps) {
   const author = useAppSelector((state: RootState) => state.user.user?.name);
   return (
-    <div className=" space-y-4">
-      <div className="text-3xl py-6">{author}</div>
+    <div className="">
+      <div className="text-3xl py-12">{author}</div>
       <div className="flex space-x-8">
         <button
           type="button"

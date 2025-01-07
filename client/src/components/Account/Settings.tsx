@@ -87,7 +87,7 @@ export default function Settings() {
         >
           <div className="flex flex-col items-start">
             <p className="text-sm text-gray-500">Bio</p>
-            <p className="text-lg font-medium">{user?.bio || "Loading..."}</p>
+            <p className="text-sm text-start">{user?.bio || "Loading..."}</p>
           </div>
         </button>
       </div>

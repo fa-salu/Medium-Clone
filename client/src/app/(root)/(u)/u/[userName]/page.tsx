@@ -184,39 +184,41 @@ export default function Page() {
           </div>
 
           <div className="w-1/3 flex flex-col p-4 space-y-4">
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col items-center space-y-4">
               {author?.imageUri ? (
-                <Image
-                  src={author.imageUri}
-                  alt={author?.name}
-                  width={80}
-                  height={80}
-                  className="object-cover rounded-full"
-                />
+                <div className="relative w-20 h-20">
+                  <Image
+                    src={author.imageUri}
+                    alt={author?.name || "Author Avatar"}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-full"
+                  />
+                </div>
               ) : (
                 <div className="w-20 h-20 bg-gray-300 rounded-full" />
               )}
-              <span className="text-xl font-semibold">{author?.name}</span>
-              <span>
-                {followers.length}
-                {"  "}
-                Follwers
+              <span className="text-xl font-semibold">
+                {author?.name || "Unknown Author"}
               </span>
+              <span>{followers.length} Followers</span>
+              {!owner && (
+                <button
+                  type="button"
+                  className={`${
+                    isFollow
+                      ? "w-24 text-sm bg-transparent border border-green-500  text-green-500 py-2  rounded-full mt-2 hover:border-green-600 hover:text-green-600"
+                      : "w-24 text-sm bg-green-500 text-white py-2 px-4 rounded-full mt-2 hover:bg-green-600"
+                  }`}
+                  onClick={() => handleFollow(author?._id || "")}
+                >
+                  {isFollow ? "Following" : "Follow"}
+                </button>
+              )}
+              <div>
+                <span className="text-gray-500">{author?.bio}</span>
+              </div>
             </div>
-
-            {!owner && (
-              <button
-                type="button"
-                className={`${
-                  isFollow
-                    ? "w-24 text-sm bg-transparent border border-green-500  text-green-500 py-2  rounded-full mt-2 hover:border-green-600 hover:text-green-600"
-                    : "w-24 text-sm bg-green-500 text-white py-2 px-4 rounded-full mt-2 hover:bg-green-600"
-                }`}
-                onClick={() => handleFollow(author?._id || "")}
-              >
-                {isFollow ? "Following" : "Follow"}
-              </button>
-            )}
           </div>
         </>
       )}

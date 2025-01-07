@@ -87,7 +87,7 @@ export default function Page() {
 
   return (
     <div className="flex space-x-6 p-12">
-      <div className="w-2/3 ml-20">
+      <div className="w-2/3 ml-20 border-r">
         {collections ? (
           <div key={collections.collectionName} className="space-y-4">
             <h1 className="text-2xl border-b py-4 capitalize">

@@ -27,17 +27,19 @@ export default function AuthorDetails() {
 
   return (
     <div className="space-y-4 p-6">
-      <div className="items-center space-y-3">
+      <div className="items-center space-y-3 text-center">
         {user ? (
           <>
-            <Image
-              src={user.imageUri}
-              alt={user.name}
-              width={100}
-              height={100}
-              className="rounded-full bg-gray-500"
-            />
-            <p>{user.name}</p>
+            <div className="relative w-24 h-24 mx-auto">
+              <Image
+                src={user.imageUri}
+                alt={user.name}
+                layout="fill"
+                objectFit="cover"
+                className="rounded-full bg-gray-500"
+              />
+            </div>
+            <p className="text-lg font-semibold">{user.name}</p>
             <Link href={"/me/settings/account"}>
               <Button
                 sx={{
@@ -47,6 +49,7 @@ export default function AuthorDetails() {
               >
                 Edit Profile
               </Button>
+              <p>{user.bio}</p>
             </Link>
           </>
         ) : (
