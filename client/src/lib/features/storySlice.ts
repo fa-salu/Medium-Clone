@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 import type { RootState } from "../store";
 import { axiosErrorCatch } from "@/utils/axios-ErrorCatch";
 
-interface AuthorDetails {
+export interface AuthorDetails {
   _id: string;
   email: string;
   imageUri: string;
@@ -25,6 +25,7 @@ interface Article {
   claps: number;
   likes: number;
   authorDetails?: AuthorDetails;
+  isUpdate: boolean;
 }
 
 interface SavedCollection {
@@ -307,25 +308,34 @@ const storySlice = createSlice({
       .addCase(saveOrUpdateStory.rejected, (state) => {
         state.isSaving = false;
       })
-      .addCase(addClaps.pending, (state) => {
-        state.isLoading = true;
+      .addCase(addClaps.pending, (state, action) => {
+        const storyIndex = state.articles.findIndex(
+          (story) => story._id === action.meta.arg.storyId
+        );
+        if (storyIndex !== -1) {
+          state.articles[storyIndex].isUpdate = true;
+        }
       })
       .addCase(addClaps.fulfilled, (state, action) => {
         const updatedStory = action.payload;
-        if (state.article && state.article._id === updatedStory._id) {
-          state.article.claps = updatedStory.claps;
-        }
         const index = state.articles.findIndex(
           (story) => story._id === updatedStory._id
         );
         if (index !== -1) {
           state.articles[index].claps = updatedStory.claps;
+          state.articles[index].isUpdate = false;
         }
       })
       .addCase(addClaps.rejected, (state, action) => {
-        state.isLoading = false;
+        const storyIndex = state.articles.findIndex(
+          (story) => story._id === action.meta.arg.storyId
+        );
+        if (storyIndex !== -1) {
+          state.articles[storyIndex].isUpdate = false;
+        }
         state.error = action.payload as string;
       })
+
       .addCase(saveStoryToCollection.pending, (state) => {
         state.isLoading = true;
       })

@@ -36,7 +36,8 @@
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"react-quill": "^2.0.0",
-		"react-redux": "^9.1.2"
+		"react-redux": "^9.1.2",
+		"uuid": "^11.0.4"
 	},
 	"devDependencies": {
 		"@types/jquery": "^3.5.32",

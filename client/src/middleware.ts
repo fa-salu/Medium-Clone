@@ -5,7 +5,8 @@ const isUserProtectedRoute = (route: string) =>
   route.startsWith("/u-home") ||
   route.startsWith("/new-story") ||
   route.startsWith("/profile") ||
-  route.startsWith("/settings");
+  route.startsWith("/settings") ||
+  route.startsWith("/u/");
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("user")?.value;
