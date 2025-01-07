@@ -19,19 +19,16 @@ export const uploadFile = async (
     bufferStream.end(file.buffer);
 
     cloudinary.uploader
-      .upload_stream(
-        { resource_type: "auto" }, // Automatically handles both images and videos
-        (error, result) => {
-          if (error) {
-            res.status(500).json({
-              error: "Failed to upload to Cloudinary",
-              details: error,
-            });
-          } else {
-            res.status(200).json({ url: result?.secure_url });
-          }
+      .upload_stream({ resource_type: "auto" }, (error, result) => {
+        if (error) {
+          res.status(500).json({
+            error: "Failed to upload to Cloudinary",
+            details: error,
+          });
+        } else {
+          res.status(200).json({ url: result?.secure_url });
         }
-      )
+      })
       .end(file.buffer);
   } catch (error) {
     console.error("Error during upload:", error);

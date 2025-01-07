@@ -63,6 +63,11 @@ export default function Navbar() {
     setAnchorEl(null);
   };
 
+  const handleSettings = () => {
+    router.push("/me/settings/account");
+    setAnchorEl(null);
+  };
+
   return (
     <motion.nav
       initial={{ y: 0 }}
@@ -99,7 +104,7 @@ export default function Navbar() {
           transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
           <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>Settings</MenuItem>
+          <MenuItem onClick={handleSettings}>Settings</MenuItem>
           <MenuItem onClick={handleLogOut}>Sign Out</MenuItem>
         </Menu>
       </div>

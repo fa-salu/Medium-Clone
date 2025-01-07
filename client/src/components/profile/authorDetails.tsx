@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import { useEffect } from "react";
 import { fetchUserDetails } from "@/lib/features/authSlice";
+import Link from "next/link";
 
 export default function AuthorDetails() {
   const dispatch = useAppDispatch();
@@ -37,14 +38,16 @@ export default function AuthorDetails() {
               className="rounded-full bg-gray-500"
             />
             <p>{user.name}</p>
-            <Button
-              sx={{
-                color: "green",
-                fontSize: "0.75rem",
-              }}
-            >
-              Edit Profile
-            </Button>
+            <Link href={"/me/settings/account"}>
+              <Button
+                sx={{
+                  color: "green",
+                  fontSize: "0.75rem",
+                }}
+              >
+                Edit Profile
+              </Button>
+            </Link>
           </>
         ) : (
           <p>No user details available</p>

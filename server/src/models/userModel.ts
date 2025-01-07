@@ -7,6 +7,7 @@ interface User extends Document {
   likedPosts: mongoose.Types.ObjectId[];
   clappedPosts: mongoose.Types.ObjectId[];
   following: mongoose.Types.ObjectId[];
+  bio?: string;
 }
 
 const userSchema = new Schema<User>(
@@ -14,6 +15,7 @@ const userSchema = new Schema<User>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     imageUri: { type: String, required: true },
+    bio: { type: String, default: "" },
     likedPosts: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Story",

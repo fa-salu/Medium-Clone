@@ -31,10 +31,10 @@ export default function AvatarComponent() {
           src={user.imageUri}
           width={30}
           height={30}
-          className="rounded-full"
+          className="w-8 h-8 rounded-full"
         />
       ) : (
-        <div className="w-8 h-8 bg-gray-300 rounded-full" />
+        <div className="w-10 h-10 object-cover bg-gray-300 rounded-full" />
       )}
     </div>
   );

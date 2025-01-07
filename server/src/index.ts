@@ -12,6 +12,7 @@ import topicRoutes from "./routes/topicsRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import followTopiceRoutes from "./routes/followTopicsRoutes";
 import followPeopleRoutes from "./routes/followPeopleRoutes";
+import profileUpdateRoutes from "./routes/profileRoute";
 
 dotenv.config();
 const app = express();
@@ -32,7 +33,8 @@ app.use(
   topicRoutes,
   commentRoutes,
   followTopiceRoutes,
-  followPeopleRoutes
+  followPeopleRoutes,
+  profileUpdateRoutes
 );
 
 const PORT = process.env.PORT || 3001;

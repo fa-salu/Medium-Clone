@@ -7,6 +7,7 @@ interface UserState {
   user: {
     _id: string | null;
     name: string;
+    bio: string;
     email: string;
     imageUri: string;
   } | null;
