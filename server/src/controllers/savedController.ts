@@ -151,9 +151,6 @@ export const getSavedCollectionByName = async (
   const userId = req.user?.id;
   const { listName } = req.params;
 
-  console.log("User ID:", userId);
-  console.log("Requested Collection Name:", listName);
-
   if (!userId) {
     return res
       .status(400)
@@ -219,8 +216,6 @@ export const getSavedCollectionByName = async (
       },
     },
   ]);
-
-  console.log("Aggregation Result:", userSavedCollection);
 
   if (!userSavedCollection || userSavedCollection.length === 0) {
     return res

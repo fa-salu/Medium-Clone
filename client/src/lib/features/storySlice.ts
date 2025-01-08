@@ -206,6 +206,20 @@ export const fetchStoryByAuthor = createAsyncThunk(
   }
 );
 
+export const follwedUsersStories = createAsyncThunk(
+  "story/followedUsersStories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get("/api/followed-stories");
+      console.log("res", response.data.data);
+      return response.data.data;
+    } catch (error) {
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
 export const deleteStory = createAsyncThunk(
   "story/deleteStory",
   async ({ storyId }: { storyId: string }, { rejectWithValue }) => {
@@ -276,6 +290,7 @@ const storySlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
+
       .addCase(fetchStory.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -290,6 +305,7 @@ const storySlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
+
       .addCase(fetchStoryByListName.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -302,6 +318,7 @@ const storySlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
+
       .addCase(fetchAllStories.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -316,6 +333,7 @@ const storySlice = createSlice({
         state.articles = [];
         state.isLoading = false;
       })
+
       .addCase(saveOrUpdateStory.pending, (state) => {
         state.isSaving = true;
       })
@@ -326,6 +344,7 @@ const storySlice = createSlice({
       .addCase(saveOrUpdateStory.rejected, (state) => {
         state.isSaving = false;
       })
+
       .addCase(addClaps.pending, (state, action) => {
         const storyIndex = state.articles.findIndex(
           (story) => story._id === action.meta.arg.storyId
@@ -351,6 +370,18 @@ const storySlice = createSlice({
         if (storyIndex !== -1) {
           state.articles[storyIndex].isUpdate = false;
         }
+        state.error = action.payload as string;
+      })
+
+      .addCase(follwedUsersStories.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(follwedUsersStories.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.articles = action.payload;
+      })
+      .addCase(follwedUsersStories.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload as string;
       })
 
@@ -393,6 +424,7 @@ const storySlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
+
       .addCase(fetchSavedCollections.pending, (state) => {
         state.isLoading = true;
       })
@@ -404,6 +436,7 @@ const storySlice = createSlice({
         state.error = action.payload as string;
         state.savedCollections = [];
       })
+
       .addCase(deleteStory.fulfilled, (state, action) => {
         state.articles = state.articles.filter(
           (article) => article._id !== action.payload?.storyId

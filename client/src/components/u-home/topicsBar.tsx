@@ -2,7 +2,10 @@
 
 import { Add, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
-import { fetchAllStories } from "@/lib/features/storySlice";
+import {
+  fetchAllStories,
+  follwedUsersStories,
+} from "@/lib/features/storySlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import type { RootState } from "@/lib/store";
 import Link from "next/link";
@@ -26,7 +29,12 @@ export default function TopicBar() {
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
-    dispatch(fetchAllStories(category));
+
+    if (category === "Following") {
+      dispatch(follwedUsersStories());
+    } else {
+      dispatch(fetchAllStories(category));
+    }
   };
 
   const scrollContainer = (direction: "left" | "right") => {

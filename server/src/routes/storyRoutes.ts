@@ -7,6 +7,7 @@ import {
   updateStorys,
   fetchStoryById,
   getStoriesByAuthor,
+  getFollowedUsersStories,
 } from "../controllers/storyController";
 import { verifyToken } from "../middlewares/verifyToken";
 import { errorCatch } from "../utils/error/errorCatch";
@@ -23,5 +24,10 @@ router.get(
   "/stories/author/:userId",
   verifyToken,
   errorCatch(getStoriesByAuthor)
+);
+router.get(
+  "/followed-stories",
+  verifyToken,
+  errorCatch(getFollowedUsersStories)
 );
 export default router;

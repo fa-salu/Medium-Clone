@@ -12,13 +12,11 @@ import { useRouter } from "next/navigation";
 export const WhoToFollow = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { userDetails } = useAppSelector(
+  const { userDetails, status: userStatus } = useAppSelector(
     (state: RootState) => state.userDetail
   );
   const owner = useAppSelector((state: RootState) => state.user.user?._id);
-  const { following, loading } = useAppSelector(
-    (state: RootState) => state.followUser
-  );
+  const { following } = useAppSelector((state: RootState) => state.followUser);
 
   const users = Array.isArray(userDetails)
     ? userDetails.filter((user) => {
@@ -29,8 +27,8 @@ export const WhoToFollow = () => {
     : [];
 
   useEffect(() => {
+    dispatch(getAllUsers());
     if (owner) {
-      dispatch(getAllUsers());
       dispatch(getFollowing(owner));
     }
   }, [dispatch, owner]);
@@ -41,13 +39,17 @@ export const WhoToFollow = () => {
   };
 
   const handleFollow = (userId: string) => {
-    dispatch(followUser(userId));
+    dispatch(followUser(userId)).then(() => {
+      if (owner) {
+        dispatch(getFollowing(owner));
+      }
+    });
   };
 
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-4">Who to Follow</h3>
-      {loading ? (
+      {userStatus === "loading" ? (
         <>
           <WhoToFollowSkelton />
           <button

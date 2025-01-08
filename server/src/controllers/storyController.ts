@@ -5,6 +5,7 @@ import { StandardResponse } from "../utils/standardResponse";
 import Story from "../models/storyModel";
 import { UserModel } from "../models/userModel";
 import mongoose from "mongoose";
+import { FollowModel } from "../models/followPeopleModel";
 
 // Create a new story
 export const createStory = async (req: CustomRequest, res: Response) => {
@@ -158,37 +159,6 @@ export const getStoriesByAuthor = async (req: CustomRequest, res: Response) => {
   res.status(200).json({ message: "Stories fetched successfully", stories });
 };
 
-// Update a story
-// export const updateStory = async (req: CustomRequest, res: Response) => {
-//   const { storyId } = req.params;
-//   const { title, content, category } = req.body;
-//   const userId = req.user?.id;
-
-//   if (!storyId) {
-//     throw new CustomError("Story ID is required.", 400);
-//   }
-
-//   const story = await Story.findById(storyId);
-
-//   if (!story) {
-//     throw new CustomError("Story not found.", 404);
-//   }
-
-//   if (story.author.toString() !== userId) {
-//     throw new CustomError("Unauthorized to update this story.", 403);
-//   }
-
-//   story.title = title || story.title;
-//   story.content = content || story.content;
-//   story.category = category || story.category;
-
-//   await story.save();
-
-//   res
-//     .status(200)
-//     .json(new StandardResponse("Story updated successfully", story));
-// };
-
 // Delete a story
 export const deleteStory = async (req: CustomRequest, res: Response) => {
   const { storyId } = req.params;
@@ -256,4 +226,47 @@ export const updateClaps = async (req: CustomRequest, res: Response) => {
   res
     .status(200)
     .json(new StandardResponse("Likes toggled successfully", story));
+};
+
+// get stories of followed users
+export const getFollowedUsersStories = async (
+  req: CustomRequest,
+  res: Response
+) => {
+  const userId = req.user?.id;
+
+  const follows = await FollowModel.find({ follower: userId });
+
+  if (!follows) {
+    throw new CustomError("You are not following anyone.", 404);
+  }
+
+  const followedUsers = follows.map((follow) => follow.following);
+
+  const stories = await Story.aggregate([
+    {
+      $match: { author: { $in: followedUsers } },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "author",
+        foreignField: "_id",
+        as: "authorDetails",
+      },
+    },
+    {
+      $unwind: {
+        path: "$authorDetails",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $sort: { createdAt: -1 },
+    },
+  ]);
+
+  res
+    .status(200)
+    .json(new StandardResponse("Fetch stories successfully", stories));
 };

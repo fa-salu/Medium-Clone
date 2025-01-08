@@ -15,10 +15,11 @@ export default function SearchComponent() {
     dispatch(fetchAllStories("For You"));
   }, [dispatch]);
 
-  const filteredStories = stories.filter((story) =>
-    story.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
+  const filteredStories = Array.isArray(stories)
+    ? stories.filter((story) =>
+        story.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
   const clearSearch = () => {
     setSearchQuery("");
   };

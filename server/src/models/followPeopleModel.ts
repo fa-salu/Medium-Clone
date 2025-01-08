@@ -1,8 +1,8 @@
 import mongoose, { Schema, type Document } from "mongoose";
 
 interface Follow extends Document {
-  follower: mongoose.Types.ObjectId; // ID of the user who follows
-  following: mongoose.Types.ObjectId; // ID of the user being followed
+  follower: mongoose.Types.ObjectId;
+  following: mongoose.Types.ObjectId;
 }
 
 const followSchema = new Schema<Follow>(

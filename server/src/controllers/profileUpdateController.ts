@@ -6,7 +6,6 @@ import { CustomError } from "../utils/error/customError";
 export const updateUserDetails = async (req: CustomRequest, res: Response) => {
   const userId = req.user?.id;
   const { name, imageUri, bio } = req.body;
-  console.log("body:", req.body);
   if (!name && !imageUri && !bio) {
     throw new CustomError("No updates provided.", 404);
   }
