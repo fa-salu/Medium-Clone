@@ -17,6 +17,7 @@ import BookmarkPopover from "@/components/ui/savedStoryPopover";
 import { Button } from "@mui/material";
 import CommentsSection from "@/components/Comment/commentSection";
 import StoryPageSkelton from "@/components/ui/skelton/storyPage";
+import FormattedDate from "@/components/ui/timeFormat";
 
 export default function Page() {
   const params = useParams();
@@ -84,22 +85,10 @@ export default function Page() {
                     <Button className="text-green-600">Follow</Button>
                   )}
                   <div className="text-sm text-gray-500">
-                    {new Date(article.createdAt).toLocaleDateString()}
+                    <FormattedDate date={article.createdAt} />
                   </div>
                 </div>
               </div>
-
-              {article.coverImage && (
-                <div className="w-full mb-6">
-                  <Image
-                    src={article.coverImage}
-                    alt="Story Image"
-                    width={800}
-                    height={400}
-                    className="w-full rounded-lg object-cover"
-                  />
-                </div>
-              )}
 
               <div className="border-y py-5 px-2">
                 <div className="flex justify-between items-center text-sm text-gray-600">

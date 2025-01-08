@@ -2,6 +2,7 @@ import express from "express";
 import { verifyToken } from "../middlewares/verifyToken";
 import { errorCatch } from "../utils/error/errorCatch";
 import {
+  deleteCollection,
   getSavedCollectionByName,
   getSavedStoriesByUser,
   savedStory,
@@ -16,5 +17,6 @@ router.get(
   verifyToken,
   errorCatch(getSavedCollectionByName)
 );
+router.delete("/delete-collection", verifyToken, errorCatch(deleteCollection));
 
 export default router;

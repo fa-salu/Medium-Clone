@@ -6,7 +6,7 @@ export default function Page() {
     <div>
       <div className="min-h-screen bg-white">
         <div className="flex relative px-12 space-x-8">
-          <div className="w-2/3">
+          <div className="w-2/3 border-r">
             <MainFeed />
           </div>
           <Sidebar />

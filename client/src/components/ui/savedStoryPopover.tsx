@@ -71,7 +71,10 @@ export default function BookmarkPopover({
               <button
                 type="button"
                 key={collection}
-                onClick={() => onAddToCollection(collection)}
+                onClick={() => {
+                  onAddToCollection(collection);
+                  handleClose();
+                }}
                 className="w-full text-left p-2 hover:bg-gray-100 rounded"
               >
                 {collection}

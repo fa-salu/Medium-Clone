@@ -13,7 +13,6 @@ import type { RootState } from "@/lib/store";
 import { useEffect } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import FollowPopover from "@/components/ui/followPopover";
 import BookmarkPopover from "@/components/ui/savedStoryPopover";
 import Link from "next/link";
 import { fetchUserById } from "@/lib/features/userSlice";
@@ -23,26 +22,23 @@ import {
   getFollowers,
   getFollowing,
 } from "@/lib/features/followPeopleSlice";
+import FormattedDate from "@/components/ui/timeFormat";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
   const dispatch = useAppDispatch();
   const author = useAppSelector(
-    (state: RootState) => state.userDetail.userDetails
+    (state: RootState) => state.userDetail.userList
   );
+
   const ownerId = useAppSelector((state: RootState) => state.user.user?._id);
-  const { articles, article, savedCollections, isLoading, error } =
-    useAppSelector((state: RootState) => state.story);
-  console.log("article:", article);
-  const { followers, following, loading, successMessage } = useAppSelector(
-    (state: RootState) => state.followUser
+  const { articles, savedCollections, isLoading } = useAppSelector(
+    (state: RootState) => state.story
   );
-  console.log("fwer:", followers);
-  console.log("fwing:", following);
+  const { followers } = useAppSelector((state: RootState) => state.followUser);
 
   const isFollow = followers.some((follow) => follow.follower._id === ownerId);
-  console.log("isfollow", isFollow);
   const owner = ownerId === userId;
 
   const collections = savedCollections || [];
@@ -74,10 +70,6 @@ export default function Page() {
       dispatch(getFollowers(authorId));
       dispatch(getFollowing(authorId));
     });
-  };
-
-  const handleFollows = (authorId: string) => {
-    console.log("Hello");
   };
 
   const handleCreateNewCollection = (
@@ -125,7 +117,7 @@ export default function Page() {
                     <div className="flex justify-between items-center text-sm text-gray-600">
                       <div className="flex items-center space-x-4">
                         <span>
-                          {new Date(story.createdAt).toLocaleDateString()}
+                          <FormattedDate date={story.createdAt} />
                         </span>
                         <button
                           type="button"
@@ -133,7 +125,7 @@ export default function Page() {
                           onClick={() => handleClap(story._id)}
                         >
                           <ThumbUpAltOutlined className="mr-1 text-gray-600" />
-                          {story.claps || 0}
+                          {story.claps > 0 ? story.claps : ""}
                         </button>
                         <Link href={`/${story._id}`}>
                           <ChatBubbleOutline className="mr-1 text-gray-600" />
@@ -153,12 +145,6 @@ export default function Page() {
                               newCollectionName,
                               story._id
                             )
-                          }
-                        />
-                        <FollowPopover
-                          authorName={story.authorDetails?.name || "Unknown"}
-                          onFollow={() =>
-                            handleFollows(story.authorDetails?.name || "")
                           }
                         />
                       </div>

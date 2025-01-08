@@ -1,6 +1,6 @@
 import React from "react";
 import { Skeleton } from "@mui/material";
-import { v4 as uuidv4 } from "uuid"; // Import uuid to generate unique keys
+import { v4 as uuidv4 } from "uuid";
 
 export default function MainFeedSkeleton() {
   return (

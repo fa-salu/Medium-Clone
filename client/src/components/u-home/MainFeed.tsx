@@ -15,12 +15,12 @@ import { useAppDispatch } from "@/lib/hooks";
 import Image from "next/image";
 import BookmarkPopover from "../ui/savedStoryPopover";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import MainFeedSkeleton from "../ui/skelton/mainFeed";
+import parse from "html-react-parser";
+import FormattedDate from "../ui/timeFormat";
 
 export default function MainFeed() {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const { articles, savedCollections, isLoading } = useSelector(
     (state: RootState) => state.story
   );
@@ -55,14 +55,18 @@ export default function MainFeed() {
     );
   };
 
+  const containsImageOrAnchorTag = (html: string): boolean => {
+    const regex = /<img[^>]*>|<a[^>]*>/i;
+    return regex.test(html);
+  };
+
   return (
     <>
+      <TopicBar />
       {isLoading ? (
         <MainFeedSkeleton />
       ) : (
-        <div className="space-y-6 ">
-          <TopicBar />
-
+        <div className="space-y-6">
           {noArticles ? (
             <p className="text-center text-gray-500">
               No articles available in this category.
@@ -73,7 +77,7 @@ export default function MainFeed() {
                 key={article._id}
                 className="p-4 border-b space-y-2 flex flex-col overflow-y-auto"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 pb-3">
                   {article.authorDetails?.imageUri ? (
                     <Image
                       src={article.authorDetails.imageUri}
@@ -95,10 +99,17 @@ export default function MainFeed() {
                   </Link>
                 </div>
                 <Link href={`/${article._id}`}>
-                  <div className="flex justify-between">
-                    <h2 className="text-lg font-semibold flex-grow pr-4">
-                      {article.title}
-                    </h2>
+                  <div className="flex justify-between over">
+                    <div className="flex-grow pr-4">
+                      <h2 className="text-xl font-semibold pb-2">
+                        {article.title}
+                      </h2>
+                      {!containsImageOrAnchorTag(article.content) && (
+                        <div className="text-sm text-gray-600 mt-1 line-clamp-3">
+                          {parse(article.content)}
+                        </div>
+                      )}
+                    </div>
                     {article.coverImage && (
                       <Image
                         src={article.coverImage}
@@ -112,9 +123,9 @@ export default function MainFeed() {
                 </Link>
 
                 <div className="flex justify-between items-center text-sm text-gray-600">
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-4 py-2">
                     <span>
-                      {new Date(article.createdAt).toLocaleDateString()}
+                      <FormattedDate date={article.createdAt} />
                     </span>
                     <button
                       type="button"
@@ -122,7 +133,7 @@ export default function MainFeed() {
                       onClick={() => handleClap(article._id)}
                     >
                       <ThumbUpAltOutlined className="mr-1 text-gray-600" />
-                      {article.claps || 0}
+                      {article.claps > 0 ? article.claps : ""}
                     </button>
                     <Link href={`/${article._id}`}>
                       <ChatBubbleOutline className="mr-1 text-gray-600" />

@@ -7,12 +7,13 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import type { RootState } from "@/lib/store";
 import Link from "next/link";
 import { fetchFollowedTopics } from "@/lib/features/topicFollowSlice";
+import MainFeedBarSkelton from "../ui/skelton/mainFeedBarSkelton";
 
 export default function TopicBar() {
   const [selectedCategory, setSelectedCategory] = useState("For You");
   const containerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const { followTopics } = useAppSelector(
+  const { followTopics, status } = useAppSelector(
     (state: RootState) => state.topicFollow
   );
 
@@ -39,6 +40,10 @@ export default function TopicBar() {
       }
     }
   };
+
+  if (status === "loading") {
+    return <MainFeedBarSkelton />;
+  }
 
   return (
     <div className="flex sticky top-0 items-center space-x-4 p-4 border-b justify-between bg-white">

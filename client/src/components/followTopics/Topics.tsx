@@ -14,7 +14,7 @@ import { useEffect } from "react";
 export default function Topics() {
   const dispatch = useAppDispatch();
   const { topics, loading } = useAppSelector((state: RootState) => state.topic);
-  const { followTopics, status, error } = useAppSelector(
+  const { followTopics } = useAppSelector(
     (state: RootState) => state.topicFollow
   );
 

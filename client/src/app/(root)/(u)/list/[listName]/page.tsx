@@ -2,6 +2,7 @@
 
 import AuthorDetails from "@/components/profile/authorDetails";
 import PopoverMenu from "@/components/ui/RemovePopover";
+import FormattedDate from "@/components/ui/timeFormat";
 import {
   addClaps,
   fetchStoryByListName,
@@ -124,7 +125,7 @@ export default function Page() {
                   <div className="flex justify-between items-center text-sm text-gray-600">
                     <div className="flex items-center space-x-4">
                       <span>
-                        {new Date(story.createdAt).toLocaleDateString()}
+                        <FormattedDate date={story.createdAt} />
                       </span>
                       <button
                         type="button"
@@ -132,11 +133,10 @@ export default function Page() {
                         onClick={() => handleClap(story._id)}
                       >
                         <ThumbUpAltOutlined className="mr-1 text-gray-600" />
-                        {story.claps || 0}
+                        {story.claps > 0 ? story.claps : ""}
                       </button>
                       <span className="flex items-center">
                         <ChatBubbleOutline className="mr-1 text-gray-600" />
-                        {0}
                       </span>
                     </div>
                     <div className="flex items-center space-x-4">

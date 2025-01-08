@@ -239,3 +239,46 @@ export const getSavedCollectionByName = async (
       )
     );
 };
+
+// Delete colletions
+export const deleteCollection = async (req: CustomRequest, res: Response) => {
+  const { collectionName } = req.body;
+  const userId = req.user?.id;
+
+  if (!collectionName) {
+    throw new CustomError("Collection Name is required.", 400);
+  }
+
+  // Find the user's saved collections
+  const userCollections = await SavedCollectionModel.findOne({ userId });
+
+  if (!userCollections) {
+    throw new CustomError("No saved collections found for the user.", 404);
+  }
+
+  // Find the collection to delete
+  const collectionIndex = userCollections.collections.findIndex(
+    (entry) => entry.collectionName === collectionName
+  );
+
+  if (collectionIndex === -1) {
+    throw new CustomError(
+      `Collection '${collectionName}' not found for the user.`,
+      404
+    );
+  }
+
+  // Remove the collection and its associated stories
+  userCollections.collections.splice(collectionIndex, 1);
+
+  await userCollections.save();
+
+  return res
+    .status(200)
+    .json(
+      new StandardResponse(
+        `Collection '${collectionName}' and all its saved stories have been removed successfully.`,
+        { collectionName }
+      )
+    );
+};

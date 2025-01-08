@@ -151,7 +151,6 @@ export const addClaps = createAsyncThunk(
       const response = await axiosInstance.post(
         `/api/stories/${storyId}/claps`
       );
-      console.log("clap res:", response.data.data);
       return response.data.data;
     } catch (error) {
       const errorMessage = axiosErrorCatch(error);
@@ -213,6 +212,24 @@ export const deleteStory = createAsyncThunk(
     try {
       const response = await axiosInstance.delete(`/api/stories/${storyId}`);
       return response.data;
+    } catch (error) {
+      const errorMessage = axiosErrorCatch(error);
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const deleteCollection = createAsyncThunk(
+  "story/deleteCollection",
+  async (
+    { collectionName }: { collectionName: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axiosInstance.delete("/api/delete-collection", {
+        data: { collectionName },
+      });
+      return response.data.data;
     } catch (error) {
       const errorMessage = axiosErrorCatch(error);
       return rejectWithValue(errorMessage);

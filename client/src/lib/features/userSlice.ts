@@ -12,12 +12,14 @@ interface User {
 
 interface UserState {
   userDetails: User[];
+  userList: User | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: UserState = {
   userDetails: [],
+  userList: null,
   status: "idle",
   error: null,
 };
@@ -62,6 +64,7 @@ const userSlice = createSlice({
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.userDetails = action.payload;
+        state.userList = action.payload;
       })
       .addCase(fetchUserById.rejected, (state, action) => {
         state.status = "failed";
@@ -74,6 +77,7 @@ const userSlice = createSlice({
       .addCase(getAllUsers.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.userDetails = action.payload;
+        state.userList = action.payload;
       })
       .addCase(getAllUsers.rejected, (state, action) => {
         state.status = "failed";
