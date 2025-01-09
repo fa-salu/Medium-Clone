@@ -37,8 +37,9 @@ export default function Page() {
   }, [dispatch, storyId]);
 
   const handleClap = (storyId: string) => {
-    dispatch(addClaps({ storyId }));
-    dispatch(fetchStory(storyId));
+    dispatch(addClaps({ storyId })).then(() => {
+      dispatch(fetchStory(storyId));
+    });
   };
 
   const handleAddToCollection = (collectionName: string, storyId: string) => {

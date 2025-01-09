@@ -23,6 +23,7 @@ import {
   getFollowing,
 } from "@/lib/features/followPeopleSlice";
 import FormattedDate from "@/components/ui/timeFormat";
+import parse from "html-react-parser";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -84,6 +85,12 @@ export default function Page() {
     );
   };
 
+  const removeImageAndAnchorTags = (html: string): string => {
+    const regex =
+      /<img[^>]*>|<a[^>]*>.*?<\/a>|<h2[^>]*>.*?<\/h2>|<h3[^>]*>.*?<\/h3>|<br\s*\/?>/gi;
+    return html.replace(regex, "");
+  };
+
   if (!userId) {
     return <AuthorPageSkelton />;
   }
@@ -111,9 +118,29 @@ export default function Page() {
                   className="p-4 border-b flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0"
                 >
                   <div className="flex flex-col flex-1 space-y-4">
-                    <Link href={`/${story._id}`}>
-                      <h2 className="text-xl font-semibold">{story.title}</h2>
+                    <Link
+                      href={`/${story._id}`}
+                      className="flex justify-between"
+                    >
+                      <div className="flex-grow">
+                        <h2 className="text-xl font-semibold">{story.title}</h2>
+                        <div className="text-sm text-gray-600 mt-1 line-clamp-3">
+                          {parse(removeImageAndAnchorTags(story.content))}
+                        </div>
+                      </div>
+                      <div className="flex-shrink-0 ml-4">
+                        {story.coverImage && (
+                          <Image
+                            src={story.coverImage}
+                            alt={story.title || "Story Image"}
+                            width={150}
+                            height={150}
+                            className="object-cover rounded-md w-24 h-24"
+                          />
+                        )}
+                      </div>
                     </Link>
+
                     <div className="flex justify-between items-center text-sm text-gray-600">
                       <div className="flex items-center space-x-4">
                         <span>
@@ -150,18 +177,6 @@ export default function Page() {
                       </div>
                     </div>
                   </div>
-
-                  {story.coverImage && (
-                    <div>
-                      <Image
-                        src={story.coverImage}
-                        alt={story.title || "Story Image"}
-                        width={100}
-                        height={100}
-                        className="object-cover rounded-md"
-                      />
-                    </div>
-                  )}
                 </div>
               ))
             ) : (

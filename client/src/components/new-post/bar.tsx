@@ -3,8 +3,10 @@ import { Avatar, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import PublishButton from "@/components/ui/publishButton";
 import Link from "next/link";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import type { RootState } from "@/lib/store";
+import { useEffect } from "react";
+import { fetchUserDetails } from "@/lib/features/authSlice";
 
 interface BarProps {
   setShowIcons: React.Dispatch<React.SetStateAction<boolean>>;
@@ -12,17 +14,23 @@ interface BarProps {
 
 export default function Bar({ setShowIcons }: BarProps) {
   const user = useAppSelector((state: RootState) => state.user?.user);
+  const dispatch = useAppDispatch();
+
   const handleAddIconClick = () => {
     setShowIcons((prev) => !prev);
   };
+  useEffect(() => {
+    dispatch(fetchUserDetails());
+  }, [dispatch]);
 
+  console.log("user", user);
   return (
     <div className="flex sticky top-0 justify-between items-center px-52 py-4 bg-white rounded-lg z-50">
       <div className="flex items-end">
         <Link href="/u-home">
           <h1 className="text-3xl font-semibold">Medium</h1>
         </Link>
-        <p className="text-sm ml-3 text-gray-500">Draft in Fasalu</p>
+        <p className="text-sm ml-3 text-gray-500">Draft in {user?.name}</p>
       </div>
       <div className="flex items-center space-x-6">
         <PublishButton />

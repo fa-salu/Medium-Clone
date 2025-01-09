@@ -86,9 +86,10 @@ export default function StoryList({ selectedTab }: StoryListProps) {
   const noArticles = !articles || articles.length === 0;
   const noCollections = !collections || collections.length === 0;
 
-  const containsImageOrAnchorTag = (html: string): boolean => {
-    const regex = /<img[^>]*>|<a[^>]*>/i;
-    return regex.test(html);
+  const removeImageAndAnchorTags = (html: string): string => {
+    const regex =
+      /<img[^>]*>|<a[^>]*>.*?<\/a>|<h2[^>]*>.*?<\/h2>|<h3[^>]*>.*?<\/h3>|<br\s*\/?>/gi;
+    return html.replace(regex, "");
   };
 
   return (
@@ -115,11 +116,9 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                           <h2 className="text-xl font-semibold pb-2">
                             {article.title}
                           </h2>
-                          {!containsImageOrAnchorTag(article.content) && (
-                            <div className="text-sm text-gray-600 mt-1 line-clamp-3">
-                              {parse(article.content)}
-                            </div>
-                          )}
+                          <div className="text-sm text-gray-600 mt-1 line-clamp-3">
+                            {parse(removeImageAndAnchorTags(article.content))}
+                          </div>
                         </div>
                         {article.coverImage && (
                           <Image
