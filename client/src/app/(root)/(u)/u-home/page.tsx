@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar/Navbar";
 import MainFeed from "@/components/u-home/MainFeed";
 import Sidebar from "@/components/u-home/sideBar";
 export default function Page() {

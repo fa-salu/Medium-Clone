@@ -88,7 +88,7 @@ const followSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(followUser.fulfilled, (state, action) => {
+      .addCase(followUser.fulfilled, (state) => {
         state.loading = false;
         state.successMessage = "User followed successfully!";
       })

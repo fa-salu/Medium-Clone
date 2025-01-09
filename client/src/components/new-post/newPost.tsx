@@ -72,7 +72,7 @@ export default function NewStory() {
 
   useEffect(() => {
     if (titleRef.current) {
-      const titleEditor = new MediumEditor(titleRef.current, {
+      new MediumEditor(titleRef.current, {
         placeholder: { text: "Title", hideOnClick: true },
         toolbar: false,
         disableReturn: true,
@@ -83,7 +83,7 @@ export default function NewStory() {
     }
 
     if (storyRef.current) {
-      const storyEditor = new MediumEditor(storyRef.current, {
+      new MediumEditor(storyRef.current, {
         placeholder: { text: "Tell your story...", hideOnClick: true },
         toolbar: {
           buttons: ["bold", "italic", "underline", "anchor", "h2", "h3"],

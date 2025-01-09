@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { Avatar, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
 import { fetchUserDetails } from "@/lib/features/authSlice";
 import type { RootState } from "@/lib/store";

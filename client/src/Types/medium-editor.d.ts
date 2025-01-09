@@ -1,11 +1,18 @@
 declare module "medium-editor" {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const MediumEditor: any;
-  export default MediumEditor;
-}
+  interface MediumEditorOptions {
+    toolbar?: boolean | object;
+    placeholder?: { text: string; hideOnClick: boolean };
+    disableReturn?: boolean;
+  }
 
-declare module "medium-editor-insert-plugin" {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const MediumEditorInsertPlugin: any;
-  export default MediumEditorInsertPlugin;
+  class MediumEditor {
+    constructor(selector: string | HTMLElement, options?: MediumEditorOptions);
+
+    setContent(content: string): void;
+    getContent(): string;
+
+    // You can add more methods as you need
+  }
+
+  export default MediumEditor;
 }

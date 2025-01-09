@@ -8,6 +8,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { signIn, useSession } from "next-auth/react";
 import { handleGoogleLogin } from "@/lib/features/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import Link from "next/link";
 export default function RegisterDialog({
   open,
   onClose,
@@ -59,19 +60,19 @@ export default function RegisterDialog({
         </Button>
         <p className="text-center text-sm text-gray-600">
           Already have an account?
-          <a href="/" className="text-green-600 font-medium hover:underline">
+          <Link href="/" className="text-green-600 font-medium hover:underline">
             Sign in
-          </a>
+          </Link>
         </p>
         <p className="text-xs text-center text-gray-500 mt-6">
-          Click "Sign up" to agree to our
-          <a href="/" className="underline">
+          Click &quot;Sign up&quot; to agree to our
+          <Link href="/" className="underline">
             Terms of Service
-          </a>
+          </Link>
           and acknowledge that our
-          <a href="/" className="underline">
+          <Link href="/" className="underline">
             Privacy Policy
-          </a>
+          </Link>
           applies to you.
         </p>
       </div>

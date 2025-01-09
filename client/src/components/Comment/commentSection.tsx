@@ -13,6 +13,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import DeletePopover from "../ui/deletePopover";
 import { Button } from "@mui/material";
+import Image from "next/image";
 
 interface Props {
   storyId: string;
@@ -119,9 +120,11 @@ export default function CommentsSection({ storyId }: Props) {
               <div className="flex items-center mb-2">
                 <div className="w-8 h-8 rounded-full overflow-hidden">
                   {reply.author.imageUri ? (
-                    <img
+                    <Image
                       src={reply.author.imageUri}
                       alt={reply.author.name}
+                      width={40}
+                      height={40}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -233,9 +236,11 @@ export default function CommentsSection({ storyId }: Props) {
               <div className="flex items-center mb-2">
                 <div className="w-8 h-8 rounded-full overflow-hidden">
                   {comment.author.imageUri ? (
-                    <img
+                    <Image
                       src={comment.author.imageUri}
                       alt={comment.author.name}
+                      width={40}
+                      height={40}
                       className="w-full h-full object-cover"
                     />
                   ) : (

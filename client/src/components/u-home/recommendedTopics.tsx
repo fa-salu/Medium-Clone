@@ -8,9 +8,7 @@ import RecommendedSkelton from "../ui/skelton/recommendePage";
 export default function RecommendedTopics() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { topics, loading, error } = useAppSelector(
-    (state: RootState) => state.topic
-  );
+  const { topics, loading } = useAppSelector((state: RootState) => state.topic);
 
   useEffect(() => {
     dispatch(fetchTopics());

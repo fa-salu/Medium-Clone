@@ -19,9 +19,7 @@ interface ProfileDetails {
 
 export default function Settings() {
   const dispatch = useAppDispatch();
-  const { user, status, error } = useAppSelector(
-    (state: RootState) => state.user
-  );
+  const { user, status } = useAppSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (status === "idle") {

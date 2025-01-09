@@ -9,6 +9,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useAppDispatch } from "@/lib/hooks";
 import { handleGoogleLogin } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginDialog({
   open,
@@ -64,19 +65,15 @@ export default function LoginDialog({
         </Button>
         <p className="text-center text-sm text-gray-600">
           No account?
-          <a href="/" className="text-green-600 font-medium hover:underline">
+          <Link href="#" className="text-green-600 font-medium hover:underline">
             Create one
-          </a>
+          </Link>
         </p>
         <p className="text-xs text-center text-gray-500 mt-6">
-          Click "Sign in" to agree to our
-          <a href="/" className="underline">
-            Terms of Service
-          </a>
+          Click &quot;Sign in&quot; to agree to our
+          <p className="underline">Terms of Service</p>
           and acknowledge that our
-          <a href="/" className="underline">
-            Privacy Policy
-          </a>
+          <p className="underline">Privacy Policy</p>
           applies to you.
         </p>
       </div>
