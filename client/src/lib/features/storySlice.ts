@@ -68,7 +68,6 @@ export const fetchStory = createAsyncThunk(
   async (storyId: string, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/api/stories/${storyId}`);
-      console.log("fetchSotry:", response.data.data);
       return response.data.data;
     } catch (error) {
       const errorMessage = axiosErrorCatch(error);
@@ -84,7 +83,6 @@ export const fetchStoryByListName = createAsyncThunk(
       const response = await axiosInstance.get(
         `/api/saved-collections/${listName}`
       );
-      console.log("fetchStoryByListName:", response.data.data);
       return response.data.data;
     } catch (error) {
       const errorMessage = axiosErrorCatch(error);
@@ -211,7 +209,6 @@ export const follwedUsersStories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get("/api/followed-stories");
-      console.log("res", response.data.data);
       return response.data.data;
     } catch (error) {
       const errorMessage = axiosErrorCatch(error);

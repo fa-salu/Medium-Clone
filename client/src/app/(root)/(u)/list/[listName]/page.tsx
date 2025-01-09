@@ -53,8 +53,6 @@ export default function Page() {
     (state: RootState) => state.story.savedCollections
   ) as unknown as SavedCollection | null;
 
-  console.log("collection:", collections);
-
   useEffect(() => {
     dispatch(fetchStoryByListName(listName));
   }, [dispatch, listName]);

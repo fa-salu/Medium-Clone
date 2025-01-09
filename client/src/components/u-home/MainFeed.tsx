@@ -25,8 +25,6 @@ export default function MainFeed() {
     (state: RootState) => state.story
   );
 
-  console.log("articles", articles);
-
   const collections = savedCollections || [];
 
   const noArticles = !articles || articles.length === 0;

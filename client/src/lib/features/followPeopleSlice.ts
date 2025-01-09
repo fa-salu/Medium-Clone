@@ -54,7 +54,6 @@ export const getFollowers = createAsyncThunk<
 >("follow/getFollowers", async (userId, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.get(`/api/${userId}/followers`);
-    console.log("Followers response:", response.data);
     return response.data;
   } catch (error) {
     return rejectWithValue(axiosErrorCatch(error));
@@ -67,7 +66,6 @@ export const getFollowing = createAsyncThunk<
 >("follow/getFollowing", async (userId, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.get(`/api/${userId}/following`);
-    console.log("Following response:", response.data);
     return response.data;
   } catch (error) {
     return rejectWithValue(axiosErrorCatch(error));

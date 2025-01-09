@@ -23,7 +23,6 @@ export default function Bar({ setShowIcons }: BarProps) {
     dispatch(fetchUserDetails());
   }, [dispatch]);
 
-  console.log("user", user);
   return (
     <div className="flex sticky top-0 justify-between items-center px-52 py-4 bg-white rounded-lg z-50">
       <div className="flex items-end">
