@@ -54,8 +54,8 @@ export default function Navbar() {
   };
 
   const handleCreateClick = () => {
-    dispatch(resetStory());
     router.push("/new-story");
+    dispatch(resetStory());
   };
 
   const handleProfileClick = () => {

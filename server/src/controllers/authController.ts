@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import type { Request, Response } from "express";
+import type { Response } from "express";
 import { UserModel } from "../models/userModel";
 import { StandardResponse } from "../utils/standardResponse";
 import type { CustomRequest } from "../types/interfaces";

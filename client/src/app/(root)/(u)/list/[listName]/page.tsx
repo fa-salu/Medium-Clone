@@ -2,6 +2,7 @@
 
 import AuthorDetails from "@/components/profile/authorDetails";
 import PopoverMenu from "@/components/ui/RemovePopover";
+import CollectionSkeleton from "@/components/ui/skelton/listCollection";
 import FormattedDate from "@/components/ui/timeFormat";
 import {
   addClaps,
@@ -53,6 +54,8 @@ export default function Page() {
     (state: RootState) => state.story.savedCollections
   ) as unknown as SavedCollection | null;
 
+  const isLoading = useAppSelector((state: RootState) => state.story.isLoading);
+
   useEffect(() => {
     dispatch(fetchStoryByListName(listName));
   }, [dispatch, listName]);
@@ -85,94 +88,102 @@ export default function Page() {
   };
 
   return (
-    <div className="flex space-x-6 p-12">
-      <div className="w-2/3 ml-20 border-r">
-        {collections ? (
-          <div key={collections.collectionName} className="space-y-4">
-            <h1 className="text-2xl border-b py-4 capitalize">
-              {collections.collectionName}
-            </h1>
+    <>
+      {isLoading ? (
+        <div>
+          <CollectionSkeleton />
+        </div>
+      ) : (
+        <div className="flex space-x-6 p-12">
+          <div className="w-2/3 ml-20 border-r">
+            {collections ? (
+              <div key={collections.collectionName} className="space-y-4">
+                <h1 className="text-2xl border-b py-4 capitalize">
+                  {collections.collectionName}
+                </h1>
 
-            {collections.stories?.length > 0 ? (
-              collections.stories.map((story) => (
-                <div
-                  key={story._id}
-                  className="p-4 border-b space-y-2 flex flex-col"
-                >
-                  <div className="flex items-center space-x-2">
-                    {story.authorDetails?.imageUri ? (
-                      <Image
-                        src={story.authorDetails.imageUri}
-                        alt={story.authorDetails?.name || "Author Name"}
-                        width={50}
-                        height={50}
-                        className="w-6 h-6 rounded-full"
-                      />
-                    ) : (
-                      <div className="w-6 h-6 rounded-full bg-gray-900" />
-                    )}
-                    <p>{story.authorDetails?.name}</p>
-                  </div>
-                  <Link href={`/${story._id}`}>
-                    <div className="flex justify-between">
-                      <h2 className="text-lg font-semibold flex-grow pr-4">
-                        {story.title}
-                      </h2>
+                {collections.stories?.length > 0 ? (
+                  collections.stories.map((story) => (
+                    <div
+                      key={story._id}
+                      className="p-4 border-b space-y-2 flex flex-col"
+                    >
+                      <div className="flex items-center space-x-2">
+                        {story.authorDetails?.imageUri ? (
+                          <Image
+                            src={story.authorDetails.imageUri}
+                            alt={story.authorDetails?.name || "Author Name"}
+                            width={50}
+                            height={50}
+                            className="w-6 h-6 rounded-full"
+                          />
+                        ) : (
+                          <div className="w-6 h-6 rounded-full bg-gray-900" />
+                        )}
+                        <p>{story.authorDetails?.name}</p>
+                      </div>
+                      <Link href={`/${story._id}`}>
+                        <div className="flex justify-between">
+                          <h2 className="text-lg font-semibold flex-grow pr-4">
+                            {story.title}
+                          </h2>
+                        </div>
+                      </Link>
+                      <div className="flex justify-between items-center text-sm text-gray-600">
+                        <div className="flex items-center space-x-4">
+                          <span>
+                            <FormattedDate date={story.createdAt} />
+                          </span>
+                          <button
+                            type="button"
+                            className="flex items-center"
+                            onClick={() => handleClap(story._id)}
+                          >
+                            <ThumbUpAltOutlined className="mr-1 text-gray-600" />
+                            {story.claps > 0 ? story.claps : ""}
+                          </button>
+                          <span className="flex items-center">
+                            <ChatBubbleOutline className="mr-1 text-gray-600" />
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          <MoreHoriz
+                            onClick={(e: MouseEvent<SVGSVGElement>) =>
+                              handleMoreClick(
+                                e,
+                                story._id,
+                                collections.collectionName
+                              )
+                            }
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </Link>
-                  <div className="flex justify-between items-center text-sm text-gray-600">
-                    <div className="flex items-center space-x-4">
-                      <span>
-                        <FormattedDate date={story.createdAt} />
-                      </span>
-                      <button
-                        type="button"
-                        className="flex items-center"
-                        onClick={() => handleClap(story._id)}
-                      >
-                        <ThumbUpAltOutlined className="mr-1 text-gray-600" />
-                        {story.claps > 0 ? story.claps : ""}
-                      </button>
-                      <span className="flex items-center">
-                        <ChatBubbleOutline className="mr-1 text-gray-600" />
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      <MoreHoriz
-                        onClick={(e: MouseEvent<SVGSVGElement>) =>
-                          handleMoreClick(
-                            e,
-                            story._id,
-                            collections.collectionName
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))
+                  ))
+                ) : (
+                  <p>No stories available in this collection.</p>
+                )}
+              </div>
             ) : (
-              <p>No stories available in this collection.</p>
+              <p>No collections available.</p>
             )}
           </div>
-        ) : (
-          <p>No collections available.</p>
-        )}
-      </div>
 
-      <div className="w-1/3">
-        <AuthorDetails />
-      </div>
-      {selectedStory && (
-        <PopoverMenu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClosePopover}
-          onRemove={handleRemove}
-          storyId={selectedStory.storyId}
-          collectionName={selectedStory.collectionName}
-        />
+          <div className="w-1/3">
+            <AuthorDetails />
+          </div>
+          {selectedStory && (
+            <PopoverMenu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClosePopover}
+              onRemove={handleRemove}
+              storyId={selectedStory.storyId}
+              collectionName={selectedStory.collectionName}
+            />
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }

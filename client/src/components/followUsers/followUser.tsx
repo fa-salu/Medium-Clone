@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { followUser, getFollowing } from "@/lib/features/followPeopleSlice";
 import { getAllUsers } from "@/lib/features/userSlice";
 import Image from "next/image";
+import UsersToFollowSkeleton from "../ui/skelton/followUserPage";
 
 export default function FollowUsers() {
   const dispatch = useAppDispatch();
@@ -43,7 +44,9 @@ export default function FollowUsers() {
         <h1 className="text-3xl border-b py-2">Users to Follow</h1>
 
         {usersStatus === "loading" ? (
-          <div>Loading...</div>
+          <div>
+            <UsersToFollowSkeleton />
+          </div>
         ) : (
           <div className="space-y-4 mt-6 w-full max-w-3xl">
             {userDetails?.map((user) => (

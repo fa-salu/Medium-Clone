@@ -64,14 +64,18 @@ export default function Settings() {
         >
           <div className="flex flex-col items-start">
             <p className="text-sm text-gray-500">Name</p>
-            <p className="text-lg font-medium">{user?.name || "Loading..."}</p>
+            <p className="text-lg font-medium">
+              {user?.name || "Enter your name"}
+            </p>
           </div>
         </button>
 
         <div className="flex justify-between items-center py-4 border-b">
           <div>
             <p className="text-sm text-gray-500">Email</p>
-            <p className="text-lg font-medium">{user?.email || "Loading..."}</p>
+            <p className="text-lg font-medium">
+              {user?.email || "email @example.com"}
+            </p>
           </div>
           <IconButton disabled>
             <BlockIcon />
@@ -85,7 +89,7 @@ export default function Settings() {
         >
           <div className="flex flex-col items-start">
             <p className="text-sm text-gray-500">Bio</p>
-            <p className="text-sm text-start">{user?.bio || "Loading..."}</p>
+            <p className="text-sm text-start">{user?.bio || "Add a bio..."}</p>
           </div>
         </button>
       </div>

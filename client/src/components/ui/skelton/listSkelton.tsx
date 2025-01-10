@@ -2,7 +2,6 @@ import React from "react";
 import {
   Skeleton,
   Box,
-  Card,
   CardContent,
   CardActions,
   Typography,
@@ -17,7 +16,7 @@ interface SkeletonListProps {
 
 export default function SkeletonList({ selectedTab }: SkeletonListProps) {
   const renderArticleSkeleton = () => (
-    <Card className="p-4 border-b space-y-2 flex flex-col" elevation={2}>
+    <Box className="p-4 border-b space-y-2 flex flex-col">
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Skeleton variant="text" width="70%" height={30} />
@@ -46,11 +45,11 @@ export default function SkeletonList({ selectedTab }: SkeletonListProps) {
           </Box>
         </Box>
       </CardContent>
-    </Card>
+    </Box>
   );
 
   const renderCollectionSkeleton = () => (
-    <Card className="p-4 border-b space-y-2" elevation={2}>
+    <Box className="p-4 border-b space-y-2">
       <CardContent>
         <Box display="flex" alignItems="center" gap={2} pb={2}>
           <Skeleton variant="circular" width={25} height={25} />
@@ -62,7 +61,7 @@ export default function SkeletonList({ selectedTab }: SkeletonListProps) {
           <DeleteForeverIcon className="text-gray-600" />
         </CardActions>
       </CardContent>
-    </Card>
+    </Box>
   );
 
   return (

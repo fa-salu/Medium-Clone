@@ -36,7 +36,7 @@ export default function IconSet({
 
   useEffect(() => {
     if (imageUrl) {
-      setCoverImage(imageUrl); // Update the cover image in the parent component.
+      setCoverImage(imageUrl);
 
       if (storyRef.current) {
         const editor = storyRef.current as HTMLDivElement;

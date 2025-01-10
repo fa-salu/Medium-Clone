@@ -112,7 +112,7 @@ export default function NewStory() {
         showIcons={showIcons}
         setCoverImage={setCoverImage}
       />
-      <div className="flex flex-col px-32 mt-10 space-y-6 mb-20">
+      <div className="flex flex-col px-56 mt-10 space-y-6 mb-20">
         <div
           ref={titleRef}
           className="text-4xl font-bold placeholder-gray-400 bg-transparent focus:outline-none pl-2"

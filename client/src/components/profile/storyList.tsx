@@ -187,7 +187,7 @@ export default function StoryList({ selectedTab }: StoryListProps) {
                     key={collection.collectionName}
                     className="p-4 border-b space-y-2"
                   >
-                    <div className="flex pb-3 ">
+                    <div className="flex pb-3 gap-2">
                       {author?.imageUri && (
                         <Image
                           src={author?.imageUri}

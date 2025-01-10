@@ -63,19 +63,19 @@ export default function LoginDialog({
         >
           Sign in with Google
         </Button>
-        <p className="text-center text-sm text-gray-600">
+        <span className="text-center text-sm text-gray-600">
           No account?
           <Link href="#" className="text-green-600 font-medium hover:underline">
             Create one
           </Link>
-        </p>
-        <p className="text-xs text-center text-gray-500 mt-6">
+        </span>
+        <span className="text-xs text-center text-gray-500 mt-6">
           Click &quot;Sign in&quot; to agree to our
-          <p className="underline">Terms of Service</p>
+          <span className="underline">Terms of Service</span>
           and acknowledge that our
-          <p className="underline">Privacy Policy</p>
+          <span className="underline">Privacy Policy</span>
           applies to you.
-        </p>
+        </span>
       </div>
     </Dialog>
   );

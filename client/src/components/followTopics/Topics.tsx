@@ -10,6 +10,7 @@ import type { RootState } from "@/lib/store";
 import TopicIcon from "@mui/icons-material/Topic";
 import { Button } from "@mui/material";
 import { useEffect } from "react";
+import TopicsSkeleton from "../ui/skelton/TopicPage";
 
 export default function Topics() {
   const dispatch = useAppDispatch();
@@ -35,7 +36,9 @@ export default function Topics() {
         <h1 className="text-3xl border-b py-2">Topics to Follow</h1>
 
         {loading ? (
-          <div>Loading...</div>
+          <div>
+            <TopicsSkeleton />
+          </div>
         ) : (
           <div className="space-y-4 mt-6 w-full max-w-3xl">
             {topics?.map((topic) => (

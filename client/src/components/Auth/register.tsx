@@ -58,13 +58,13 @@ export default function RegisterDialog({
         >
           Sign up with Google
         </Button>
-        <p className="text-center text-sm text-gray-600">
+        <span className="text-center text-sm text-gray-600">
           Already have an account?
           <Link href="/" className="text-green-600 font-medium hover:underline">
             Sign in
           </Link>
-        </p>
-        <p className="text-xs text-center text-gray-500 mt-6">
+        </span>
+        <span className="text-xs text-center text-gray-500 mt-6">
           Click &quot;Sign up&quot; to agree to our
           <Link href="/" className="underline">
             Terms of Service
@@ -74,7 +74,7 @@ export default function RegisterDialog({
             Privacy Policy
           </Link>
           applies to you.
-        </p>
+        </span>
       </div>
     </Dialog>
   );
