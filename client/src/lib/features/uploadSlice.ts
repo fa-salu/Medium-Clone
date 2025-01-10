@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/utils/axios";
 import { axiosErrorCatch } from "@/utils/axios-ErrorCatch";
 
-export const uploadImage = createAsyncThunk(
-  "upload/uploadImage",
+export const uploadImageOrVideo = createAsyncThunk(
+  "upload/uploadImageOrVideo",
   async (file: File, { rejectWithValue }) => {
     try {
       const formData = new FormData();
@@ -46,15 +46,15 @@ const uploadSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(uploadImage.pending, (state) => {
+      .addCase(uploadImageOrVideo.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(uploadImage.fulfilled, (state, action) => {
+      .addCase(uploadImageOrVideo.fulfilled, (state, action) => {
         state.isLoading = false;
         state.url = action.payload;
       })
-      .addCase(uploadImage.rejected, (state, action) => {
+      .addCase(uploadImageOrVideo.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });

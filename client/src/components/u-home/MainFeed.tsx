@@ -56,7 +56,7 @@ export default function MainFeed() {
 
   const removeImageAndAnchorTags = (html: string): string => {
     const regex =
-      /<img[^>]*>|<a[^>]*>.*?<\/a>|<h2[^>]*>.*?<\/h2>|<h3[^>]*>.*?<\/h3>|<br\s*\/?>/gi;
+      /<img[^>]*>|<a[^>]*>.*?<\/a>|<h2[^>]*>.*?<\/h2>|<h3[^>]*>.*?<\/h3>|<br\s*\/?>|<video[^>]*>.*?<\/video>|<div[^>]*>.*?<\/div>/gi;
     return html.replace(regex, "");
   };
 

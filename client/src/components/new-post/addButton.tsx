@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
@@ -6,7 +6,7 @@ import CodeIcon from "@mui/icons-material/Code";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { CircularProgress } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { uploadImage, resetImage } from "@/lib/features/uploadSlice";
+import { uploadImageOrVideo, resetImage } from "@/lib/features/uploadSlice";
 import { RootState } from "@/lib/store";
 
 export default function IconSet({
@@ -21,16 +21,17 @@ export default function IconSet({
   const dispatch = useAppDispatch();
   const { url, isLoading } = useAppSelector((state: RootState) => state.upload);
 
+  const [fileType, setFileType] = useState<"image" | "video" | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      dispatch(uploadImage(file))
+      dispatch(uploadImageOrVideo(file))
         .unwrap()
         .then(() => {})
         .catch((error) => {
-          console.error("Error uploading image:", error);
+          console.error("Error uploading file:", error);
         });
     }
   };
@@ -42,19 +43,46 @@ export default function IconSet({
       if (storyRef.current) {
         const editor = storyRef.current as HTMLDivElement;
 
-        const imgElement = document.createElement("img");
-        imgElement.src = url;
-        imgElement.alt = "uploaded-image";
+        const element = document.createElement(
+          fileType === "video" ? "video" : "img"
+        );
 
-        editor.appendChild(imgElement);
+        if (fileType === "video") {
+          const videoElement = element as HTMLVideoElement;
+          videoElement.src = url;
+          videoElement.controls = true;
+          videoElement.classList.add("w-full");
+        } else {
+          const imageElement = element as HTMLImageElement;
+          imageElement.src = url;
+          imageElement.alt = "uploaded-image";
+          imageElement.classList.add("w-full");
+        }
+
+        editor.appendChild(element);
+
+        const descriptionDiv = document.createElement("div");
+        descriptionDiv.classList.add(
+          "mt-2",
+          "border-b",
+          "p-2",
+          "text-center",
+          "text-sm",
+          "mb-2"
+        );
+
+        descriptionDiv.style.color = "#333333";
+        editor.appendChild(descriptionDiv);
       }
 
       dispatch(resetImage());
     }
-  }, [url, storyRef, setCoverImage, dispatch]);
+  }, [url, storyRef, setCoverImage, dispatch, fileType]);
 
-  const handleIconClick = () => {
+  const handleIconClick = (type: "image" | "video") => {
+    setFileType(type);
     if (fileInputRef.current) {
+      fileInputRef.current.accept = type === "image" ? "image/*" : "video/*";
       fileInputRef.current.click();
     }
   };
@@ -62,25 +90,19 @@ export default function IconSet({
   return (
     <>
       {showIcons && (
-        <div className="absolute right-40 top-20 flex space-x-2 bg-white shadow-md p-4">
-          <AddPhotoAlternateIcon onClick={handleIconClick} />
+        <div className="fixed z-50 right-40 top-20 flex space-x-2 bg-white shadow-md p-4">
+          <AddPhotoAlternateIcon onClick={() => handleIconClick("image")} />
+          <VideoLibraryIcon onClick={() => handleIconClick("video")} />
+          <InsertDriveFileIcon />
+          <CodeIcon />
+          <MoreHorizIcon />
           <input
             ref={fileInputRef}
             type="file"
-            onChange={handleImageUpload}
+            onChange={handleFileUpload}
             className="hidden"
           />
-
-          {isLoading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <>
-              <VideoLibraryIcon />
-              <InsertDriveFileIcon />
-              <CodeIcon />
-              <MoreHorizIcon />
-            </>
-          )}
+          {isLoading ? <CircularProgress size={24} /> : <></>}
         </div>
       )}
     </>

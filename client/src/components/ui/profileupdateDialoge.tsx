@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { useAppDispatch } from "@/lib/hooks";
-import { uploadImage } from "@/lib/features/uploadSlice"; // Import the uploadImage action
-import { useAppSelector } from "@/lib/hooks"; // Import selector to check image upload status
+import { uploadImageOrVideo } from "@/lib/features/uploadSlice";
+import { useAppSelector } from "@/lib/hooks";
 
 interface ProfileDetails {
   name: string;
@@ -56,7 +56,7 @@ export default function EditProfileDialog({
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      dispatch(uploadImage(file));
+      dispatch(uploadImageOrVideo(file));
     }
   };
 
