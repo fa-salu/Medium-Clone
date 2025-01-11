@@ -27,33 +27,33 @@ export default function HeroNavbar() {
   };
 
   return (
-    <header className="flex justify-between items-center px-36 py-4 border-b border-gray-500">
+    <header className="flex justify-between items-center px-4 sm:px-36 py-4 border-b border-gray-500">
       <div className="flex items-center">
         <h1 className="text-3xl font-serif font-bold">Medium</h1>
       </div>
       <nav className="flex space-x-6 ml-auto items-center">
         <Link
           href="/home"
-          className="text-gray-800 text-[14px] hover:text-black"
+          className="text-gray-800 text-[14px] hover:text-black hidden md:flex"
         >
           Our story
         </Link>
         <Link
           href="/home"
-          className="text-gray-800 text-[14px] hover:text-black"
+          className="text-gray-800 text-[14px] hover:text-black hidden md:flex"
         >
           Membership
         </Link>
         <Link
           href="/home"
-          className="text-gray-800 text-[14px] hover:text-black"
+          className="text-gray-800 text-[14px] hover:text-black hidden md:flex"
         >
           Write
         </Link>
         <Link
           href={""}
           onClick={handleLoginDialogOpen}
-          className="text-gray-800 text-[14px] hover:text-black"
+          className="text-gray-800 text-[14px] hover:text-black hidden md:flex"
         >
           Sign in
         </Link>
