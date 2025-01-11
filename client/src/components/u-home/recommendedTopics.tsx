@@ -17,7 +17,7 @@ export default function RecommendedTopics() {
   return (
     <div>
       <section>
-        <h3 className="text-lg font-semibold mb-4">Recommended Topics</h3>
+        <h3 className="text-lg font-semibold mt-3 mb-4">Recommended Topics</h3>
         {loading ? (
           <RecommendedSkelton />
         ) : (

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
-import { Create } from "@mui/icons-material";
+import { Brightness4, Brightness7, Create } from "@mui/icons-material";
 import Cookies from "js-cookie";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -11,8 +11,11 @@ import Link from "next/link";
 import { useAppDispatch } from "@/lib/hooks";
 import { resetStory } from "@/lib/features/storySlice";
 import SearchComponent from "../search/search";
+import { useThemeContext } from "@/providers/theme-provider";
 
 export default function Navbar() {
+  const { toggleTheme, isDarkMode } = useThemeContext();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showNavbar, setShowNavbar] = useState(true);
   const open = Boolean(anchorEl);
@@ -91,6 +94,10 @@ export default function Navbar() {
       <div className="flex ">
         <IconButton onClick={handleCreateClick}>
           <Create />
+        </IconButton>
+
+        <IconButton onClick={toggleTheme}>
+          {isDarkMode ? <Brightness7 /> : <Brightness4 />}
         </IconButton>
 
         {/* <IconButton>

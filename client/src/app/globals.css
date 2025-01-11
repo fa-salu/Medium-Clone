@@ -45,3 +45,19 @@ blockquote {
 #category-container::-webkit-scrollbar {
   display: none;
 }
+
+/* For dark mode */
+body[data-theme="dark"] {
+  background-color: #121212;
+  color: white;
+}
+
+/* Light mode */
+body[data-theme="light"] {
+  background-color: white;
+  color: black;
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
