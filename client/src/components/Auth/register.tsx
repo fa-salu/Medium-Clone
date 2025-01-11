@@ -1,14 +1,14 @@
-"use client";
 import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import { Google as GoogleIcon } from "@mui/icons-material";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import CloseIcon from "@mui/icons-material/Close";
 import { signIn, useSession } from "next-auth/react";
 import { handleGoogleLogin } from "@/lib/features/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 export default function RegisterDialog({
   open,
   onClose,
@@ -16,12 +16,10 @@ export default function RegisterDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
   const handleGoogleSignIn = () => {
     signIn("google");
   };
+  const router = useRouter();
 
   const dispatch = useAppDispatch();
 
@@ -35,18 +33,27 @@ export default function RegisterDialog({
         imageUri: session.user?.image || "",
       };
       dispatch(handleGoogleLogin(userDetails));
+      router.push("/u-home");
     }
-  }, [session, dispatch]);
+  }, [session, dispatch, router]);
 
   return (
     <Dialog
-      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       aria-labelledby="responsive-dialog-title"
-      className="flex justify-center items-center"
+      PaperProps={{
+        className:
+          "flex justify-center items-center w-full sm:w-[400px] max-w-[400px] mx-auto", // Centering the content
+      }}
     >
-      <div className="p-6 w-[400px] bg-white rounded-lg">
+      <div className="relative p-6 w-full bg-white rounded-lg">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-600 hover:text-black"
+        >
+          <CloseIcon />
+        </button>
         <h2 className="text-2xl font-serif font-semibold text-center mb-6">
           Join Medium.
         </h2>

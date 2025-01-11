@@ -3,8 +3,7 @@ import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import { Google as GoogleIcon } from "@mui/icons-material";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import CloseIcon from "@mui/icons-material/Close";
 import { signIn, useSession } from "next-auth/react";
 import { useAppDispatch } from "@/lib/hooks";
 import { handleGoogleLogin } from "@/lib/features/authSlice";
@@ -18,8 +17,6 @@ export default function LoginDialog({
   open: boolean;
   onClose: () => void;
 }) {
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
 
   const handleGoogleSignIn = () => {
@@ -45,13 +42,21 @@ export default function LoginDialog({
 
   return (
     <Dialog
-      fullScreen={fullScreen}
       open={open}
       onClose={onClose}
       aria-labelledby="responsive-dialog-title"
-      className="flex justify-center items-center"
+      PaperProps={{
+        className:
+          "flex justify-center items-center w-full sm:w-[400px] max-w-[400px] mx-auto", // Centering the content
+      }}
     >
-      <div className="p-6 w-[400px] bg-white rounded-lg">
+      <div className="relative p-6 w-full bg-white rounded-lg">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-600 hover:text-black"
+        >
+          <CloseIcon />
+        </button>
         <h2 className="text-2xl font-serif font-semibold text-center mb-6">
           Welcome back.
         </h2>
