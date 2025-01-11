@@ -5,7 +5,7 @@ import { WhoToFollow } from "./whoToFollow";
 
 export default function Sidebar() {
   return (
-    <aside className="w-1/3 space-y-8">
+    <aside className="w-full space-y-8">
       <section>
         <RecommendedTopics />
       </section>
