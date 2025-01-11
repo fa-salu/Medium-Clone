@@ -39,9 +39,9 @@ export default function FollowUsers() {
   };
 
   return (
-    <div className="py-12">
+    <div className="py-4 sm:py-12 px-2 sm:px-0">
       <div className="flex flex-col items-center">
-        <h1 className="text-3xl border-b py-2">Users to Follow</h1>
+        <h1 className="text-2xl sm:text-3xl border-b py-2">Users to Follow</h1>
 
         {usersStatus === "loading" ? (
           <div>

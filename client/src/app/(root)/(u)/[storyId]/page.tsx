@@ -66,7 +66,9 @@ export default function Page() {
         ) : (
           article && (
             <div>
-              <h1 className="text-4xl font-bold mb-4 ">{article.title}</h1>
+              <h1 className="text-2xl capitalize sm:text-4xl font-bold mb-4 ">
+                {article.title}
+              </h1>
 
               <div className="flex items-center space-x-4 mb-6">
                 {article.authorDetails?.imageUri ? (

@@ -31,9 +31,9 @@ export default function Topics() {
   const followedTopics = followTopics?.topics || [];
 
   return (
-    <div className="py-12">
+    <div className="py-6 px-5 sm:px-0 sm:py-12">
       <div className="flex flex-col items-center">
-        <h1 className="text-3xl border-b py-2">Topics to Follow</h1>
+        <h1 className="text-2xl sm:text-3xl border-b py-2">Topics to Follow</h1>
 
         {loading ? (
           <div>

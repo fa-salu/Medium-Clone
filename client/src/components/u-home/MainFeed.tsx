@@ -101,9 +101,9 @@ export default function MainFeed() {
                 <Link href={`/${article._id}`}>
                   <div className="flex justify-between over">
                     <div className="flex-grow pr-4">
-                      <h2 className="text-xl font-semibold pb-2">
+                      <p className="text-lg font-bold capitalize sm:font-semibold pb-2">
                         {article.title}
-                      </h2>
+                      </p>
                       <div className="text-sm text-gray-600 mt-1 line-clamp-3">
                         {parse(removeImageAndAnchorTags(article.content))}
                       </div>

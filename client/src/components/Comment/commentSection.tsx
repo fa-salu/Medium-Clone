@@ -89,7 +89,6 @@ export default function CommentsSection({ storyId }: Props) {
       return updated;
     });
 
-    // Fetch replies if becoming visible
     if (!visibleReplies.has(commentId)) {
       dispatch(fetchRepliesByComment(commentId));
     }
@@ -192,7 +191,6 @@ export default function CommentsSection({ storyId }: Props) {
                 </div>
               )}
 
-              {/* Recursively render nested replies */}
               {visibleReplies.has(reply._id) && renderReplies(reply._id)}
             </div>
           ))}
@@ -202,7 +200,7 @@ export default function CommentsSection({ storyId }: Props) {
   };
 
   return (
-    <div className="border-t w-full py-8 mt-10">
+    <div className="border-t w-full py-8 mt-10 px-6 sm:px-0">
       <div className="max-w-2xl mx-auto mt-8">
         <h2 className="text-lg font-semibold mb-4">
           Responses ({comments.length})

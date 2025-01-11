@@ -1,6 +1,10 @@
 "use client";
 
-import { ChatBubbleOutline, ThumbUpAltOutlined } from "@mui/icons-material";
+import {
+  ChatBubbleOutline,
+  ThumbUpAltOutlined,
+  Menu,
+} from "@mui/icons-material";
 import {
   addClaps,
   fetchAllStories,
@@ -10,7 +14,7 @@ import {
 } from "@/lib/features/storySlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import type { RootState } from "@/lib/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import BookmarkPopover from "@/components/ui/savedStoryPopover";
@@ -24,6 +28,7 @@ import {
 } from "@/lib/features/followPeopleSlice";
 import FormattedDate from "@/components/ui/timeFormat";
 import parse from "html-react-parser";
+import { Drawer, IconButton } from "@mui/material";
 
 export default function Page() {
   const searchParams = useSearchParams();
@@ -38,6 +43,8 @@ export default function Page() {
     (state: RootState) => state.story
   );
   const { followers } = useAppSelector((state: RootState) => state.followUser);
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const isFollow = followers.some((follow) => follow.follower._id === ownerId);
   const owner = ownerId === userId;
@@ -96,15 +103,21 @@ export default function Page() {
   }
 
   return (
-    <div className="flex space-x-6 px-36">
-      {isLoading ? (
-        <AuthorPageSkelton />
-      ) : (
-        <>
-          <div className="flex-1 pr-8 space-y-6 border-r">
+    <div className="flex flex-col md:flex-row md:space-x-6 px-6 md:px-36">
+      <div className="flex-1 px-3 sm:px-0 sm:pr-8 space-y-6 sm:border-r">
+        {isLoading ? (
+          <AuthorPageSkelton />
+        ) : (
+          <>
             {author ? (
               <div className="pt-10 space-y-8">
                 <h1 className="text-4xl font-thin">{author?.name}</h1>
+                <IconButton
+                  onClick={() => setDrawerOpen(true)}
+                  className="absolute top-10 z-30 right-3"
+                >
+                  <Menu />
+                </IconButton>
                 <hr className="my-4" />
               </div>
             ) : (
@@ -182,12 +195,20 @@ export default function Page() {
             ) : (
               <p className="text-center text-gray-500">No stories available.</p>
             )}
-          </div>
+          </>
+        )}
+      </div>
 
-          <div className="w-1/3 flex flex-col p-4 space-y-4">
-            <div className="flex flex-col items-center space-y-4">
+      <div className="md:w-1/3 flex flex-col p-4 space-y-4">
+        <div className="md:hidden relative">
+          <Drawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+          >
+            <div className="p-4 w-72">
               {author?.imageUri ? (
-                <div className="relative w-20 h-20">
+                <div className="relative w-20 h-20 mx-auto">
                   <Image
                     src={author.imageUri}
                     alt={author?.name || "Author Avatar"}
@@ -197,32 +218,68 @@ export default function Page() {
                   />
                 </div>
               ) : (
-                <div className="w-20 h-20 bg-gray-300 rounded-full" />
+                <div className="w-20 h-20 bg-gray-300 rounded-full mx-auto" />
               )}
-              <span className="text-xl font-semibold">
+              <span className="text-xl font-semibold text-center block mt-4">
                 {author?.name || "Unknown Author"}
               </span>
-              <span>{followers.length} Followers</span>
+              <span className="block text-center">
+                {followers.length} Followers
+              </span>
               {!owner && (
                 <button
                   type="button"
                   className={`${
                     isFollow
-                      ? "w-24 text-sm bg-transparent border border-green-500  text-green-500 py-2  rounded-full mt-2 hover:border-green-600 hover:text-green-600"
-                      : "w-24 text-sm bg-green-500 text-white py-2 px-4 rounded-full mt-2 hover:bg-green-600"
+                      ? "w-full text-sm bg-transparent border border-green-500  text-green-500 py-2 mt-2 rounded-full hover:border-green-600 hover:text-green-600"
+                      : "w-full text-sm bg-green-500 text-white py-2 mt-2 rounded-full hover:bg-green-600"
                   }`}
                   onClick={() => handleFollow(author?._id || "")}
                 >
                   {isFollow ? "Following" : "Follow"}
                 </button>
               )}
-              <div>
+              <div className="mt-2">
                 <span className="text-gray-500">{author?.bio}</span>
               </div>
             </div>
-          </div>
-        </>
-      )}
+          </Drawer>
+        </div>
+
+        <div className="hidden md:flex flex-col items-center space-y-4">
+          {author?.imageUri ? (
+            <div className="relative w-20 h-20">
+              <Image
+                src={author.imageUri}
+                alt={author?.name || "Author Avatar"}
+                layout="fill"
+                objectFit="cover"
+                className="rounded-full"
+              />
+            </div>
+          ) : (
+            <div className="w-20 h-20 bg-gray-300 rounded-full" />
+          )}
+          <span className="text-xl font-semibold">
+            {author?.name || "Unknown Author"}
+          </span>
+          <span className="text-gray-500">{author?.bio}</span>
+          <span>{followers.length} Followers</span>
+          {!owner && (
+            <button
+              type="button"
+              className={`${
+                isFollow
+                  ? "text-sm bg-transparent border border-green-500  text-green-500 py-2 px-4 mt-2 rounded-full hover:border-green-600 hover:text-green-600"
+                  : "text-sm bg-green-500 text-white py-2 px-4 mt-2 rounded-full hover:bg-green-600"
+              }`}
+              onClick={() => handleFollow(author?._id || "")}
+            >
+              {isFollow ? "Following" : "Follow"}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

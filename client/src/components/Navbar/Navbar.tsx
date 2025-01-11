@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
-import { Notifications, Create } from "@mui/icons-material";
+import { Create } from "@mui/icons-material";
 import Cookies from "js-cookie";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -63,6 +63,11 @@ export default function Navbar() {
     setAnchorEl(null);
   };
 
+  const handleWriters = () => {
+    router.push("/follow-users");
+    setAnchorEl(null);
+  };
+
   const handleSettings = () => {
     router.push("/me/settings/account");
     setAnchorEl(null);
@@ -78,19 +83,19 @@ export default function Navbar() {
       className="sticky top-0 left-0 right-0 bg-white z-50 flex justify-between items-center px-4 py-2 border-b shadow-sm"
     >
       <Link href="/u-home">
-        <div className="text-2xl font-bold">Medium</div>
+        <div className="text-lg md:text-2xl font-bold">Medium</div>
       </Link>
 
       <SearchComponent />
 
-      <div className="flex space-x-4">
+      <div className="flex ">
         <IconButton onClick={handleCreateClick}>
           <Create />
         </IconButton>
 
-        <IconButton>
+        {/* <IconButton>
           <Notifications />
-        </IconButton>
+        </IconButton> */}
 
         <IconButton onClick={handleMenuClick}>
           <AvatarComponent />
@@ -104,6 +109,9 @@ export default function Navbar() {
           transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
           <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+          <MenuItem onClick={handleWriters} className="md:hidden">
+            Writers
+          </MenuItem>
           <MenuItem onClick={handleSettings}>Settings</MenuItem>
           <MenuItem onClick={handleLogOut}>Sign Out</MenuItem>
         </Menu>

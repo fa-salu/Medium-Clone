@@ -76,7 +76,11 @@ export default function PublishButton() {
       <Button
         variant="contained"
         color="success"
-        className="text-sm py-2 px-4 rounded-md"
+        sx={{
+          fontSize: "0.50rem",
+          padding: "4px 10px",
+          borderRadius: "4px",
+        }}
         onClick={handleOpen}
       >
         Publish

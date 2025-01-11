@@ -54,7 +54,7 @@ export default function TopicBar() {
   }
 
   return (
-    <div className="flex sticky top-0 items-center space-x-4 p-4 border-b justify-between bg-white">
+    <div className="flex sticky top-0 items-center space-x-4 p-1 sm:p-4 border-b justify-between bg-white">
       <div className="flex items-center space-x-4">
         <ChevronLeft
           className="cursor-pointer text-gray-800"
@@ -76,7 +76,7 @@ export default function TopicBar() {
               type="button"
               key={category}
               onClick={() => handleCategoryClick(category)}
-              className={`whitespace-nowrap px-4 py-2 text-gray-800 border-b-2 border-transparent hover:border-black ${
+              className={`whitespace-nowrap px-2 sm:px-4 py-2 text-gray-800 border-b-2 border-transparent hover:border-black ${
                 category === selectedCategory ? "border-black" : ""
               }`}
             >

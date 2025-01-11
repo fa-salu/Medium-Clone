@@ -24,14 +24,14 @@ export default function Bar({ setShowIcons }: BarProps) {
   }, [dispatch]);
 
   return (
-    <div className="flex sticky top-0 justify-between items-center px-52 py-4 bg-white rounded-lg z-50">
+    <div className="flex sticky top-0 justify-between items-center px-3 sm:px-52 py-1 sm:py-4 bg-white rounded-lg z-50">
       <div className="flex items-end">
         <Link href="/u-home">
-          <h1 className="text-3xl font-semibold">Medium</h1>
+          <h1 className="text-lg sm:text-3xl font-semibold">Medium</h1>
         </Link>
-        <p className="text-sm ml-3 text-gray-500">Draft in {user?.name}</p>
+        <p className="text-[8px] ml-3 text-gray-500">Draft in {user?.name}</p>
       </div>
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center sm:space-x-6">
         <PublishButton />
         <IconButton className="p-2 hover:bg-gray-200 rounded-full">
           <Notifications />
@@ -42,8 +42,15 @@ export default function Bar({ setShowIcons }: BarProps) {
         >
           <AddCircleIcon />
         </IconButton>
-        <IconButton className="p-2 hover:bg-gray-200 rounded-full">
-          <Avatar alt={user?.name} src={user?.imageUri} />
+        <IconButton className="hover:bg-gray-200 rounded-full">
+          <Avatar
+            alt={user?.name}
+            src={user?.imageUri}
+            sx={{
+              width: { xs: 24, sm: 32, md: 40 },
+              height: { xs: 24, sm: 32, md: 40 },
+            }}
+          />
         </IconButton>
       </div>
     </div>

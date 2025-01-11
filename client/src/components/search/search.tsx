@@ -26,7 +26,7 @@ export default function SearchComponent() {
 
   return (
     <div className="relative">
-      <div className="flex items-center border rounded-lg">
+      <div className="flex w-32 md:w-full items-center border rounded-lg">
         <input
           type="text"
           value={searchQuery}
