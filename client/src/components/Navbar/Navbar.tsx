@@ -83,7 +83,7 @@ export default function Navbar() {
         y: showNavbar ? 0 : -80,
       }}
       transition={{ type: "tween", duration: 0.3 }}
-      className="sticky top-0 left-0 right-0 bg-white z-50 flex justify-between items-center px-4 py-2 border-b shadow-sm"
+      className="sticky top-0 left-0 right-0 z-50 flex justify-between  dark:bg-black light:bg-white items-center px-4 py-2 border-b shadow-sm"
     >
       <Link href="/u-home">
         <div className="text-lg md:text-2xl font-bold">Medium</div>

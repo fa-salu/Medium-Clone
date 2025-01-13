@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useState, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 import {
   ThemeProvider as MuiThemeProvider,
   createTheme,
@@ -28,6 +34,20 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const toggleTheme = () => {
     setIsDarkMode((prevMode) => !prevMode);
   };
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (isDarkMode) {
+      root.setAttribute("data-theme", "dark");
+      root.classList.add("dark");
+      root.classList.remove("light");
+    } else {
+      root.setAttribute("data-theme", "light");
+      root.classList.add("light");
+      root.classList.remove("dark");
+    }
+  }, [isDarkMode]);
 
   const theme = createTheme({
     palette: {

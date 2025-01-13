@@ -57,7 +57,3 @@ body[data-theme="light"] {
   background-color: white;
   color: black;
 }
-
-body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}

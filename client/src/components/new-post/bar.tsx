@@ -24,7 +24,7 @@ export default function Bar({ setShowIcons }: BarProps) {
   }, [dispatch]);
 
   return (
-    <div className="flex sticky top-0 justify-between items-center px-3 sm:px-52 py-1 sm:py-4 bg-white rounded-lg z-50">
+    <div className="flex sticky top-0 justify-between items-center px-3 sm:px-52 py-1 sm:py-4 rounded-lg z-50">
       <div className="flex items-end">
         <Link href="/u-home">
           <h1 className="text-lg sm:text-3xl font-semibold">Medium</h1>

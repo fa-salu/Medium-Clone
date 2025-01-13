@@ -92,7 +92,7 @@ export const WhoToFollow = () => {
               <button
                 type="button"
                 onClick={() => handleFollow(user._id)}
-                className="border text-sm border-black text-black px-2 py-1 rounded-lg hover:bg-black hover:text-white transition duration-300"
+                className="border text-sm  px-2 py-1 rounded-lg hover:bg-black hover:text-white transition duration-300"
               >
                 Follow
               </button>
@@ -101,7 +101,7 @@ export const WhoToFollow = () => {
           <button
             type="button"
             onClick={() => router.push("/follow-users")}
-            className="mt-4 text-sm text-black hover:underline"
+            className="mt-4 text-sm hover:underline"
           >
             All Users
           </button>

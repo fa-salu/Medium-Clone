@@ -26,7 +26,7 @@ export default function RecommendedTopics() {
               topics.slice(0, 4).map((topic) => (
                 <span
                   key={topic}
-                  className="px-3 py-1 bg-gray-100 text-sm rounded-full"
+                  className="px-3 py-1 border dark:border-white light:border-black text-sm rounded-full"
                 >
                   {topic}
                 </span>
@@ -40,7 +40,7 @@ export default function RecommendedTopics() {
           <button
             type="button"
             onClick={() => router.push("/explore-topics")}
-            className="mt-4 text-sm text-black hover:underline"
+            className="mt-4 text-sm hover:underline"
           >
             Show More Topics
           </button>

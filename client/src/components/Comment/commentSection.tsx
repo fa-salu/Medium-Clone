@@ -174,7 +174,7 @@ export default function CommentsSection({ storyId }: Props) {
                     onChange={(e) =>
                       handleReplyChange(reply._id, e.target.value)
                     }
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-gray-500"
+                    className="w-full border dark:bg-black border-gray-300 rounded-lg p-3 focus:outline-none focus:border-gray-500"
                   />
                   <Button
                     type="button"
@@ -212,7 +212,7 @@ export default function CommentsSection({ storyId }: Props) {
             placeholder="What are your thoughts?"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-gray-500"
+            className="w-full border dark:bg-black border-gray-300 rounded-lg p-3 focus:outline-none focus:border-gray-500"
           />
           <Button
             onClick={handleCreate}
@@ -253,9 +253,7 @@ export default function CommentsSection({ storyId }: Props) {
                   <p className="text-sm text-gray-500">{comment.updatedAt}</p>
                 </div>
               </div>
-              <p className="text-gray-800 whitespace-pre-wrap">
-                {comment.content}
-              </p>
+              <p className=" whitespace-pre-wrap">{comment.content}</p>
 
               <div className="flex items-center justify-end space-x-4 text-gray-600 mt-3">
                 <button
@@ -289,7 +287,7 @@ export default function CommentsSection({ storyId }: Props) {
                     onChange={(e) =>
                       handleReplyChange(comment._id, e.target.value)
                     }
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-gray-500"
+                    className="w-full border dark:bg-black border-gray-300 rounded-lg p-3 focus:outline-none focus:border-gray-500"
                   />
                   <Button
                     type="button"

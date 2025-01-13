@@ -54,14 +54,14 @@ export default function TopicBar() {
   }
 
   return (
-    <div className="flex sticky top-0 items-center space-x-4 p-1 sm:p-4 border-b justify-between bg-white">
+    <div className="flex sticky top-0 items-center dark:bg-black light:bg-white space-x-4 p-1 sm:p-4 border-b justify-between  dark:border-gray-700 light:border-gray-300">
       <div className="flex items-center space-x-4">
         <ChevronLeft
-          className="cursor-pointer text-gray-800"
+          className="cursor-pointer  "
           onClick={() => scrollContainer("left")}
         />
         <Link href={"/explore-topics"}>
-          <Add className="text-gray-800" />
+          <Add />
         </Link>
       </div>
 
@@ -76,21 +76,25 @@ export default function TopicBar() {
               type="button"
               key={category}
               onClick={() => handleCategoryClick(category)}
-              className={`whitespace-nowrap px-2 sm:px-4 py-2 text-gray-800 border-b-2 border-transparent hover:border-black ${
-                category === selectedCategory ? "border-black" : ""
+              className={`whitespace-nowrap px-2 sm:px-4 py-2 border-b-2 border-transparent hover:border-black ${
+                category === selectedCategory
+                  ? "border-black dark:text-white light:text-black"
+                  : "dark:text-gray-400 light:text-gray-600"
               }`}
             >
               {category}
             </button>
           ))
         ) : (
-          <div>No topics available</div>
+          <div className="dark:text-gray-400 light:text-gray-600">
+            No topics available
+          </div>
         )}
       </div>
 
       <div className="flex items-center space-x-4">
         <ChevronRight
-          className="cursor-pointer text-gray-800"
+          className="cursor-pointer dark:text-white light:text-black"
           onClick={() => scrollContainer("right")}
         />
       </div>

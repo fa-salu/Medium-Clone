@@ -90,7 +90,7 @@ export default function IconSet({
   return (
     <>
       {showIcons && (
-        <div className="fixed z-50 right-0 sm:right-40 sm:top-20 flex space-x-2 bg-white shadow-md p-4">
+        <div className="fixed z-50 right-0 sm:right-40 sm:top-20 flex space-x-2  shadow-md p-4">
           <AddPhotoAlternateIcon onClick={() => handleIconClick("image")} />
           <VideoLibraryIcon onClick={() => handleIconClick("video")} />
           <InsertDriveFileIcon />
