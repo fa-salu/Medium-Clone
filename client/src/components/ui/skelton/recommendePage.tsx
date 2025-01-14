@@ -6,7 +6,7 @@ export default function RecommendedSkelton() {
       {Array.from({ length: 4 }).map(() => (
         <div
           key={uuidv4()}
-          className="px-3 py-1 bg-gray-200 animate-pulse text-sm rounded-full"
+          className="px-3 py-1 border animate-pulse text-sm rounded-full"
         />
       ))}
     </div>

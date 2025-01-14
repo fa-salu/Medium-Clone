@@ -28,9 +28,9 @@ export default function CommentsSection({ storyId }: Props) {
   const [newComment, setNewComment] = useState("");
   const [newReply, setNewReply] = useState<{ [key: string]: string }>({});
   const [visibleReplies, setVisibleReplies] = useState<Set<string>>(new Set());
-  const [replyInputVisible, setReplyInputVisible] = useState<Set<string>>(
-    new Set()
-  );
+  const [replyInputVisible, setReplyInputVisible] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   useEffect(() => {
     dispatch(fetchCommentsByStory(storyId));
@@ -95,15 +95,10 @@ export default function CommentsSection({ storyId }: Props) {
   };
 
   const toggleReplyInputVisibility = (commentId: string) => {
-    setReplyInputVisible((prev) => {
-      const updated = new Set(prev);
-      if (updated.has(commentId)) {
-        updated.delete(commentId);
-      } else {
-        updated.add(commentId);
-      }
-      return updated;
-    });
+    setReplyInputVisible((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
   };
 
   const renderReplies = (parentCommentId: string) => {
@@ -128,7 +123,7 @@ export default function CommentsSection({ storyId }: Props) {
                     />
                   ) : (
                     <div className="w-full h-full bg-purple-600 flex items-center justify-center text-white font-semibold text-sm capitalize">
-                      {reply.author.name.charAt(0)}
+                      {reply.author.name}
                     </div>
                   )}
                 </div>
@@ -143,7 +138,7 @@ export default function CommentsSection({ storyId }: Props) {
                 </p>
                 <DeletePopover onDelete={() => handleDelete(reply._id)} />
               </div>
-              <div className="flex items-center space-x-4 text-gray-600 mt-3">
+              {/* <div className="flex items-center space-x-4 text-gray-600 mt-3">
                 <button
                   type="button"
                   className="flex items-center text-sm hover:text-gray-900"
@@ -163,9 +158,9 @@ export default function CommentsSection({ storyId }: Props) {
                 >
                   Reply
                 </button>
-              </div>
+              </div> */}
 
-              {replyInputVisible.has(reply._id) && (
+              {replyInputVisible[reply._id] && (
                 <div className="mt-4">
                   <input
                     type="text"
@@ -278,7 +273,7 @@ export default function CommentsSection({ storyId }: Props) {
                 <DeletePopover onDelete={() => handleDelete(comment._id)} />
               </div>
 
-              {replyInputVisible.has(comment._id) && (
+              {replyInputVisible[comment._id] && (
                 <div className="mt-4">
                   <input
                     type="text"
