@@ -8,7 +8,6 @@ const axiosInstance = axios.create({
   },
 });
 
-//? request interceptor to attach the token to the Authorization header
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = Cookies.get("user");
