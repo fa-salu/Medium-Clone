@@ -1,14 +1,15 @@
 "use client";
+
 import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
 import { Google as GoogleIcon } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import { signIn, useSession } from "next-auth/react";
-import { useAppDispatch } from "@/lib/hooks";
-import { handleGoogleLogin } from "@/lib/features/authSlice";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import { handleGoogleLogin } from "@/server/actions/auth";
 
 export default function LoginDialog({
   open,
@@ -18,27 +19,34 @@ export default function LoginDialog({
   onClose: () => void;
 }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const [isRedirecting, setIsRedirecting] = React.useState(false);
+
+  const googleLoginMutation = useMutation({
+    mutationFn: handleGoogleLogin,
+    onSuccess: () => {
+      setIsRedirecting(true);
+      router.push("/u-home");
+    },
+    onError: (error) => {
+      console.error("Google login failed:", error);
+    },
+  });
 
   const handleGoogleSignIn = () => {
     signIn("google");
   };
 
-  const dispatch = useAppDispatch();
-
-  const { data: session } = useSession();
-
   React.useEffect(() => {
-    if (session) {
+    if (session && status === "authenticated" && !isRedirecting) {
       const userDetails = {
         name: session.user?.name || "",
         email: session.user?.email || "",
         imageUri: session.user?.image || "",
       };
-      dispatch(handleGoogleLogin(userDetails)).then(() => {
-        router.push("/u-home");
-      });
+      googleLoginMutation.mutate(userDetails);
     }
-  }, [session, dispatch, router]);
+  }, [session, status, isRedirecting, googleLoginMutation]);
 
   return (
     <Dialog
@@ -47,7 +55,7 @@ export default function LoginDialog({
       aria-labelledby="responsive-dialog-title"
       PaperProps={{
         className:
-          "flex justify-center items-center w-full sm:w-[400px] max-w-[400px] mx-auto", // Centering the content
+          "flex justify-center items-center w-full sm:w-[400px] max-w-[400px] mx-auto",
       }}
     >
       <div className="relative p-6 w-full bg-white rounded-lg">

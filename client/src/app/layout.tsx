@@ -5,6 +5,7 @@ import SessionProvider from "../providers/auth-provider";
 import { getServerSession } from "next-auth";
 import StoreProvider from "@/providers/store-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import QueryProvider from "@/providers/query-provider";
 
 export const metadata: Metadata = {
   title: "Medium",
@@ -29,7 +30,9 @@ export default async function RootLayout({
       <body className={`${poppins.className} antialiased`}>
         <ThemeProvider>
           <StoreProvider>
-            <SessionProvider session={session}>{children}</SessionProvider>
+            <QueryProvider>
+              <SessionProvider session={session}>{children}</SessionProvider>
+            </QueryProvider>
           </StoreProvider>
         </ThemeProvider>
       </body>
