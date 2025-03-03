@@ -13,7 +13,7 @@ import commentRoutes from "./routes/commentRoutes";
 import followTopiceRoutes from "./routes/followTopicsRoutes";
 import followPeopleRoutes from "./routes/followPeopleRoutes";
 import profileUpdateRoutes from "./routes/profileRoute";
-import startCronJob from "./jobs/cronJob";
+import startCronJob from "./jobs/cronjob";
 
 dotenv.config();
 const app = express();
@@ -24,7 +24,7 @@ app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(globalErrorHandler);
 app.use(express.json());
 
-startCronJob(); 
+startCronJob();
 
 app.use("/api/auth", authRoutes);
 app.use("/api", userRoutes);
